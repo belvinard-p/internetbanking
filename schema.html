@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKF Banking - Database Schema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #fff;
+            --text-dim: #a0a0c0;
+            --accent: #8b5cf6;
+            --gradient: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            --gradient-alt: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        header {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .home-btn::before {
+            content: '🏠';
+            font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        nav {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 100px;
+            z-index: 99;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--gradient);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-num {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-alt);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-alt);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
+        }
+
+        .card-num {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-role {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .intro-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .intro-card p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .info-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .info-card ul {
+            list-style: none;
+        }
+
+        .info-card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+        }
+
+        .info-card li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+        }
+
+        .scroll-top::before {
+            content: '↑';
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="landingPage.html" class="home-btn">Accueil</a>
+        <h1>PKF Banking - Database Schema</h1>
+        <p class="subtitle">Schéma de Base de Données PostgreSQL Complet</p>
+    </header>
+
+    <nav>
+        <a href="#overview" class="nav-btn">Vue d'ensemble</a>
+        <a href="#domains" class="nav-btn">Domaines</a>
+        <a href="#transversal" class="nav-btn">Transversal</a>
+        <a href="#security" class="nav-btn">Sécurité</a>
+    </nav>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">50+</div>
+                <div class="stat-label">Tables</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">212+</div>
+                <div class="stat-label">Migrations</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">12</div>
+                <div class="stat-label">Domaines</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">PostgreSQL</div>
+                <div class="stat-label">SGBD</div>
+            </div>
+        </div>
+
+        <section id="overview" class="section">
+            <h2 class="section-title">Vue d'ensemble</h2>
+            <div class="intro-card">
+                <p>
+                    Le schéma de base de données PKF Internet Banking est une base de données PostgreSQL complète qui
+                    gère
+                    toutes les entités et relations du système bancaire en ligne. Il utilise Liquibase pour la gestion
+                    des
+                    migrations et contient plus de 50 tables couvrant tous les aspects du système bancaire numérique.
+                </p>
+            </div>
+            <div class="info-card">
+                <h3>Architecture</h3>
+                <ul>
+                    <li><strong>SGBD:</strong> PostgreSQL</li>
+                    <li><strong>Gestion des migrations:</strong> Liquibase</li>
+                    <li><strong>Versioning:</strong> 212+ changesets de migration</li>
+                    <li><strong>Audit:</strong> Système d'audit automatique intégré</li>
+                    <li><strong>Sécurité:</strong> Contrôle d'accès granulaire par service</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="domains" class="section">
+            <h2 class="section-title">Domaines Fonctionnels</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">1</div>
+                    <h3 class="card-title">Gestion des Utilisateurs</h3>
+                    <span class="card-role">Tables: users, sub_user_attributes, admin_roles</span>
+                    <ul>
+                        <li>Authentification multi-facteurs (MFA)</li>
+                        <li>Gestion des rôles et permissions</li>
+                        <li>Support utilisateurs corporatifs</li>
+                        <li>Système de sous-utilisateurs</li>
+                        <li>Profils complets</li>
+                        <li>Avatars et préférences</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">2</div>
+                    <h3 class="card-title">Authentification et Sécurité</h3>
+                    <span class="card-role">Tables: two_factor_authentications, user_totp_settings</span>
+                    <ul>
+                        <li>MFA par SMS, Email et TOTP</li>
+                        <li>Codes de sauvegarde</li>
+                        <li>Blocage automatique</li>
+                        <li>Gestion des sessions</li>
+                        <li>Appareils enregistrés</li>
+                        <li>Audit des connexions</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">3</div>
+                    <h3 class="card-title">Comptes et Finances</h3>
+                    <span class="card-role">Tables: accounts, transactions, currency</span>
+                    <ul>
+                        <li>Multi-devises avec taux dynamiques</li>
+                        <li>Comptes avec limites</li>
+                        <li>Historique complet</li>
+                        <li>Catégorisation automatique</li>
+                        <li>Soldes temps réel</li>
+                        <li>Comptes cachés admin</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">4</div>
+                    <h3 class="card-title">Transferts et Paiements</h3>
+                    <span class="card-role">Tables: transfers, payments, recurring_payments</span>
+                    <ul>
+                        <li>Transferts internes et externes</li>
+                        <li>Paiements programmés</li>
+                        <li>Transferts SWIFT internationaux</li>
+                        <li>Gestion des bénéficiaires</li>
+                        <li>Documents justificatifs</li>
+                        <li>Validation multi-niveaux</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">5</div>
+                    <h3 class="card-title">Opérations Financières</h3>
+                    <span class="card-role">Tables: financial_operation_histories, user_operation_approves</span>
+                    <ul>
+                        <li>Workflow d'approbation</li>
+                        <li>Opérations en lot (CSV)</li>
+                        <li>Traçabilité complète</li>
+                        <li>Validation multi-utilisateurs</li>
+                        <li>Statuts détaillés</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">6</div>
+                    <h3 class="card-title">Produits et Services</h3>
+                    <span class="card-role">Tables: packages, subscriptions, products</span>
+                    <ul>
+                        <li>Packages configurables</li>
+                        <li>Tarification multi-devises</li>
+                        <li>Facturation automatique</li>
+                        <li>Période de grâce</li>
+                        <li>Produits bancaires variés</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">7</div>
+                    <h3 class="card-title">Prêts et Crédits</h3>
+                    <span class="card-role">Tables: loans, loan_products, loan_payments</span>
+                    <ul>
+                        <li>Gestion complète des prêts</li>
+                        <li>Échéanciers de paiement</li>
+                        <li>Calcul automatique intérêts</li>
+                        <li>Suivi des remboursements</li>
+                        <li>Produits configurables</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">8</div>
+                    <h3 class="card-title">Services Spécialisés</h3>
+                    <span class="card-role">Tables: taxes, checkbook_requests, custom_cards</span>
+                    <ul>
+                        <li>Paiement de taxes NRA</li>
+                        <li>Carnets de chèques</li>
+                        <li>Cartes personnalisées</li>
+                        <li>Crédits instantanés</li>
+                        <li>Workflow d'approbation</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">9</div>
+                    <h3 class="card-title">Change et Devises</h3>
+                    <span class="card-role">Tables: currency_exchange_requests, swift_currencies</span>
+                    <ul>
+                        <li>Demandes de change</li>
+                        <li>Audit complet des taux</li>
+                        <li>Support SWIFT international</li>
+                        <li>Dépôts à terme</li>
+                        <li>Validation administrative</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">10</div>
+                    <h3 class="card-title">Support et Tickets</h3>
+                    <span class="card-role">Tables: tickets, internal_notes, user_documents</span>
+                    <ul>
+                        <li>Système de tickets complet</li>
+                        <li>Notes internes support</li>
+                        <li>Gestion de documents</li>
+                        <li>Suivi des résolutions</li>
+                        <li>Communication client-support</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">11</div>
+                    <h3 class="card-title">Alertes et Notifications</h3>
+                    <span class="card-role">Tables: alerts, user_alerts, statistics</span>
+                    <ul>
+                        <li>Système d'alertes configurable</li>
+                        <li>Notifications personnalisées</li>
+                        <li>Statistiques temps réel</li>
+                        <li>Métriques de performance</li>
+                        <li>Rapports automatiques</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">12</div>
+                    <h3 class="card-title">Référentiels</h3>
+                    <span class="card-role">Tables: banks, branches, countries</span>
+                    <ul>
+                        <li>Référentiel des banques</li>
+                        <li>Gestion des agences</li>
+                        <li>Support international</li>
+                        <li>Intégration CBS</li>
+                        <li>Données de référence</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="transversal" class="section">
+            <h2 class="section-title">Fonctionnalités Transversales</h2>
+
+            <div class="info-card">
+                <h3>Audit et Traçabilité</h3>
+                <ul>
+                    <li><strong>audit_log:</strong> Logs d'audit automatiques</li>
+                    <li><strong>change_table_histories:</strong> Historique des modifications</li>
+                    <li><strong>Traçabilité complète:</strong> Toutes les opérations tracées</li>
+                    <li><strong>Logs de sécurité:</strong> Détaillés et horodatés</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Gestion des Permissions</h3>
+                <ul>
+                    <li><strong>permissions:</strong> Permissions système</li>
+                    <li><strong>packages_permissions:</strong> Permissions par package</li>
+                    <li><strong>Contrôle granulaire:</strong> Par table et colonne</li>
+                    <li><strong>Types:</strong> CLIENT/ADMIN</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Gestion des Migrations (Liquibase)</h3>
+                <ul>
+                    <li><strong>212+ changesets:</strong> Organisés chronologiquement</li>
+                    <li><strong>Rollback automatique:</strong> En cas d'erreur</li>
+                    <li><strong>Validation:</strong> Avant déploiement</li>
+                    <li><strong>Historique complet:</strong> Toutes les modifications</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="security" class="section">
+            <h2 class="section-title">Sécurité et Performance</h2>
+
+            <div class="info-card">
+                <h3>Contrôle d'Accès par Service</h3>
+                <ul>
+                    <li><strong>auth_service:</strong> Authentification et utilisateurs</li>
+                    <li><strong>payment_service:</strong> Paiements et transferts</li>
+                    <li><strong>user_service:</strong> Gestion des utilisateurs</li>
+                    <li><strong>transaction_service:</strong> Historique des transactions</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Types de Données Spécialisés</h3>
+                <ul>
+                    <li><strong>Énumérations PostgreSQL:</strong> 50+ types (account_status, transfer_status, etc.)</li>
+                    <li><strong>Types JSON/JSONB:</strong> Métadonnées flexibles et configuration dynamique</li>
+                    <li><strong>Types personnalisés:</strong> Adaptés au domaine bancaire</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Performance et Optimisation</h3>
+                <ul>
+                    <li><strong>Index stratégiques:</strong> Composites et partiels</li>
+                    <li><strong>Partitioning:</strong> Par date pour gros volumes</li>
+                    <li><strong>Archivage automatique:</strong> Anciennes données</li>
+                    <li><strong>Contraintes uniques:</strong> Intégrité des données</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Maintenance et Monitoring</h3>
+                <ul>
+                    <li><strong>Statistiques intégrées:</strong> Métriques en temps réel</li>
+                    <li><strong>Rapports automatiques:</strong> Utilisation et performance</li>
+                    <li><strong>Backups quotidiens:</strong> Sauvegarde automatique</li>
+                    <li><strong>Point-in-time recovery:</strong> Récupération précise</li>
+                    <li><strong>Réplication:</strong> Haute disponibilité</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PKF Internet Banking - Database Schema Documentation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Schéma PostgreSQL complet avec 50+ tables et 212+ migrations
+        </p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop"></div>
+
+    <script>
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTop.classList.toggle('show', window.pageYOffset > 300);
+        });
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKF Banking - TEFO Service</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #fff;
+            --text-dim: #a0a0c0;
+            --accent: #e879f9;
+            --gradient: linear-gradient(135deg, #e879f9 0%, #d946ef 100%);
+            --gradient-alt: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(232, 121, 249, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(20, 184, 166, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        header {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(232, 121, 249, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(232, 121, 249, 0.5);
+        }
+
+        .home-btn::before {
+            content: '🏠';
+            font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        nav {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 100px;
+            z-index: 99;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--gradient);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-num {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-alt);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-alt);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(232, 121, 249, 0.5);
+            box-shadow: 0 0 40px rgba(232, 121, 249, 0.3);
+        }
+
+        .card-num {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-role {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .intro-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .intro-card p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+        }
+
+        .scroll-top::before {
+            content: '↑';
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="landingPage.html" class="home-btn">Accueil</a>
+        <h1>PKF Banking - TEFO Service</h1>
+        <p class="subtitle">Service de Gestion des Tickets et Support Client</p>
+    </header>
+
+    <nav>
+        <a href="#overview" class="nav-btn">Vue d'ensemble</a>
+        <a href="#core" class="nav-btn">Services Core</a>
+        <a href="#specialized" class="nav-btn">Services Spécialisés</a>
+        <a href="#admin" class="nav-btn">Administration</a>
+    </nav>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">10+</div>
+                <div class="stat-label">Services</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">Tickets</div>
+                <div class="stat-label">Support</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">FAQ</div>
+                <div class="stat-label">Base Connaissance</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">Chat</div>
+                <div class="stat-label">Temps Réel</div>
+            </div>
+        </div>
+
+        <section id="overview" class="section">
+            <h2 class="section-title">Vue d'ensemble</h2>
+            <div class="intro-card">
+                <p>
+                    Le TEFO Service (Tickets, FAQ, and Operations) est le service central de gestion du support client
+                    dans l'écosystème PKF Internet Banking. Il gère les tickets de support, la base de connaissances
+                    FAQ,
+                    les notifications, et fournit une interface complète pour le support client avec traçabilité et
+                    gestion
+                    des priorités.
+                </p>
+            </div>
+        </section>
+
+        <section id="core" class="section">
+            <h2 class="section-title">Services Core</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">1</div>
+                    <h3 class="card-title">TicketService</h3>
+                    <span class="card-role">Service principal de gestion des tickets</span>
+                    <ul>
+                        <li>Création de tickets de support</li>
+                        <li>Gestion des statuts et priorités</li>
+                        <li>Assignation aux agents</li>
+                        <li>Suivi et historique complet</li>
+                        <li>Filtrage et recherche avancée</li>
+                        <li>Notifications automatiques</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">2</div>
+                    <h3 class="card-title">TicketMessageService</h3>
+                    <span class="card-role">Gestion des messages de tickets</span>
+                    <ul>
+                        <li>Ajout de messages aux tickets</li>
+                        <li>Support pièces jointes</li>
+                        <li>Historique des conversations</li>
+                        <li>Notifications temps réel</li>
+                        <li>Gestion des réponses</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">3</div>
+                    <h3 class="card-title">TicketCategoryService</h3>
+                    <span class="card-role">Gestion des catégories de tickets</span>
+                    <ul>
+                        <li>Création de catégories</li>
+                        <li>Organisation hiérarchique</li>
+                        <li>Assignation automatique</li>
+                        <li>Statistiques par catégorie</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">4</div>
+                    <h3 class="card-title">TicketPriorityService</h3>
+                    <span class="card-role">Gestion des priorités</span>
+                    <ul>
+                        <li>Définition des niveaux de priorité</li>
+                        <li>Escalade automatique</li>
+                        <li>SLA et délais de réponse</li>
+                        <li>Alertes de priorité</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">5</div>
+                    <h3 class="card-title">FAQService</h3>
+                    <span class="card-role">Gestion de la base de connaissances</span>
+                    <ul>
+                        <li>Création d'articles FAQ</li>
+                        <li>Catégorisation des articles</li>
+                        <li>Recherche full-text</li>
+                        <li>Statistiques de consultation</li>
+                        <li>Support multilingue</li>
+                        <li>Gestion des versions</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">6</div>
+                    <h3 class="card-title">NotificationService</h3>
+                    <span class="card-role">Service de notifications</span>
+                    <ul>
+                        <li>Notifications par email</li>
+                        <li>Notifications par SMS</li>
+                        <li>Notifications push</li>
+                        <li>Notifications in-app</li>
+                        <li>Templates personnalisables</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="specialized" class="section">
+            <h2 class="section-title">Services Spécialisés</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">7</div>
+                    <h3 class="card-title">TicketAssignmentService</h3>
+                    <span class="card-role">Assignation intelligente des tickets</span>
+                    <ul>
+                        <li>Assignation automatique</li>
+                        <li>Distribution équitable</li>
+                        <li>Basée sur compétences</li>
+                        <li>Gestion de la charge de travail</li>
+                        <li>Réassignation dynamique</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">8</div>
+                    <h3 class="card-title">TicketEscalationService</h3>
+                    <span class="card-role">Escalade automatique des tickets</span>
+                    <ul>
+                        <li>Règles d'escalade configurables</li>
+                        <li>Escalade basée sur SLA</li>
+                        <li>Notifications d'escalade</li>
+                        <li>Historique d'escalade</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">9</div>
+                    <h3 class="card-title">TicketSearchService</h3>
+                    <span class="card-role">Recherche avancée de tickets</span>
+                    <ul>
+                        <li>Recherche full-text</li>
+                        <li>Filtres multiples</li>
+                        <li>Recherche par statut</li>
+                        <li>Recherche par date</li>
+                        <li>Recherche par agent</li>
+                        <li>Suggestions automatiques</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">10</div>
+                    <h3 class="card-title">TicketAnalyticsService</h3>
+                    <span class="card-role">Analyse et statistiques</span>
+                    <ul>
+                        <li>Temps de résolution moyen</li>
+                        <li>Taux de satisfaction client</li>
+                        <li>Volume de tickets par période</li>
+                        <li>Performance des agents</li>
+                        <li>Rapports personnalisés</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin" class="section">
+            <h2 class="section-title">Services d'Administration</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">A1</div>
+                    <h3 class="card-title">AdminTicketService</h3>
+                    <span class="card-role">Gestion administrative des tickets</span>
+                    <ul>
+                        <li>Vue globale des tickets</li>
+                        <li>Gestion des agents</li>
+                        <li>Configuration des catégories</li>
+                        <li>Gestion des SLA</li>
+                        <li>Rapports administratifs</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">A2</div>
+                    <h3 class="card-title">TicketMonitoringService</h3>
+                    <span class="card-role">Surveillance des tickets</span>
+                    <ul>
+                        <li>Monitoring en temps réel</li>
+                        <li>Alertes automatiques</li>
+                        <li>Détection de patterns</li>
+                        <li>Tableaux de bord</li>
+                        <li>Métriques de performance</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">A3</div>
+                    <h3 class="card-title">TicketReportService</h3>
+                    <span class="card-role">Génération de rapports</span>
+                    <ul>
+                        <li>Rapports de performance</li>
+                        <li>Rapports de satisfaction</li>
+                        <li>Export multi-formats</li>
+                        <li>Rapports planifiés</li>
+                        <li>Analyses personnalisées</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PKF Internet Banking - TEFO Service Documentation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Service de gestion des tickets et support client</p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop"></div>
+
+    <script>
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTop.classList.toggle('show', window.pageYOffset > 300);
+        });
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+
+</html>

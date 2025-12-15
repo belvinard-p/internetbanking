@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKF Banking - Common Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #fff;
+            --text-dim: #a0a0c0;
+            --accent: #06b6d4;
+            --gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --gradient-alt: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        header {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+        }
+
+        .home-btn::before {
+            content: '🏠';
+            font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        nav {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 100px;
+            z-index: 99;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--gradient);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-num {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-alt);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-alt);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(6, 182, 212, 0.5);
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.3);
+        }
+
+        .card-num {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-role {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .intro-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .intro-card p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+        }
+
+        .scroll-top::before {
+            content: '↑';
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="landingPage.html" class="home-btn">Accueil</a>
+        <h1>PKF Banking - Common Library</h1>
+        <p class="subtitle">Bibliothèque Partagée de l'Écosystème PKF Internet Banking</p>
+    </header>
+
+    <nav>
+        <a href="#overview" class="nav-btn">Vue d'ensemble</a>
+        <a href="#settings" class="nav-btn">Paramètres</a>
+        <a href="#cbs" class="nav-btn">Clients CBS</a>
+        <a href="#internal" class="nav-btn">Clients Internes</a>
+        <a href="#validation" class="nav-btn">Validation</a>
+        <a href="#auth" class="nav-btn">Autorisation</a>
+    </nav>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">22</div>
+                <div class="stat-label">Composants</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">9</div>
+                <div class="stat-label">Clients CBS</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">4</div>
+                <div class="stat-label">Clients Internes</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">100%</div>
+                <div class="stat-label">Réutilisable</div>
+            </div>
+        </div>
+
+        <section id="overview" class="section">
+            <h2 class="section-title">Vue d'ensemble</h2>
+            <div class="intro-card">
+                <p>
+                    Cette bibliothèque commune fournit l'infrastructure de base pour tous les services PKF Internet
+                    Banking,
+                    incluant la communication avec le CBS (Core Banking System), la gestion des paramètres, la
+                    validation des données,
+                    la sérialisation et l'autorisation. Elle assure la cohérence et la réutilisabilité des composants à
+                    travers
+                    l'ensemble de l'écosystème bancaire.
+                </p>
+            </div>
+        </section>
+
+        <section id="settings" class="section">
+            <h2 class="section-title">Services de Paramètres</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">56</div>
+                    <h3 class="card-title">SettingsService</h3>
+                    <span class="card-role">Gestion centralisée des paramètres et configurations dynamiques</span>
+                    <ul>
+                        <li>Initialisation propriétés dynamiques</li>
+                        <li>Informations de contact bancaire</li>
+                        <li>Mise à jour temps réel via messages</li>
+                        <li>Gestion fichiers de branding</li>
+                        <li>Téléchargement assets visuels</li>
+                        <li>Synchronisation avec service externe</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">57</div>
+                    <h3 class="card-title">SettingsClient</h3>
+                    <span class="card-role">Client de communication avec le service de paramètres</span>
+                    <ul>
+                        <li>Récupération paramètres</li>
+                        <li>Communication REST avec gestion d'erreurs</li>
+                        <li>Sérialisation/désérialisation réponses</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="cbs" class="section">
+            <h2 class="section-title">Clients d'Adaptateur CBS</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">58</div>
+                    <h3 class="card-title">AdapterClient</h3>
+                    <span class="card-role">Client principal d'accès aux services CBS</span>
+                    <ul>
+                        <li>Agrégation clients spécialisés CBS</li>
+                        <li>Point d'entrée unique pour CBS</li>
+                        <li>Gestion centralisée connexions</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">59</div>
+                    <h3 class="card-title">AccountClient</h3>
+                    <span class="card-role">Gestion des comptes bancaires via CBS</span>
+                    <ul>
+                        <li>Récupération infos comptes clients</li>
+                        <li>Consultation soldes et historiques</li>
+                        <li>Gestion statuts de comptes</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">60</div>
+                    <h3 class="card-title">BankClient</h3>
+                    <span class="card-role">Gestion des informations bancaires</span>
+                    <ul>
+                        <li>Récupération données banques partenaires</li>
+                        <li>Synchronisation informations bancaires</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">61</div>
+                    <h3 class="card-title">BranchClient</h3>
+                    <span class="card-role">Gestion des succursales bancaires</span>
+                    <ul>
+                        <li>Récupération infos succursales</li>
+                        <li>Synchronisation données succursales</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">62</div>
+                    <h3 class="card-title">CheckbookClient</h3>
+                    <span class="card-role">Gestion des chéquiers via CBS</span>
+                    <ul>
+                        <li>Traitement commandes de chéquiers</li>
+                        <li>Suivi statuts de livraison</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">63</div>
+                    <h3 class="card-title">CurrencyClient</h3>
+                    <span class="card-role">Gestion des devises</span>
+                    <ul>
+                        <li>Récupération taux de change</li>
+                        <li>Gestion devises supportées</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">64</div>
+                    <h3 class="card-title">CustomerClient</h3>
+                    <span class="card-role">Gestion des clients CBS</span>
+                    <ul>
+                        <li>Recherche et récupération infos clients</li>
+                        <li>Validation données clients</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">65</div>
+                    <h3 class="card-title">TransactionClient</h3>
+                    <span class="card-role">Gestion des transactions bancaires</span>
+                    <ul>
+                        <li>Traitement des transactions</li>
+                        <li>Historique et suivi des opérations</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">66</div>
+                    <h3 class="card-title">TransferClient</h3>
+                    <span class="card-role">Gestion des transferts bancaires</span>
+                    <ul>
+                        <li>Exécution transferts entre comptes</li>
+                        <li>Validation et autorisation transferts</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="internal" class="section">
+            <h2 class="section-title">Clients Internes</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">67</div>
+                    <h3 class="card-title">AuthClient</h3>
+                    <span class="card-role">Client d'authentification interne</span>
+                    <ul>
+                        <li>Vérification codes OTP</li>
+                        <li>Communication service d'authentification</li>
+                        <li>Validation tokens et sessions</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">68</div>
+                    <h3 class="card-title">AlertInternalClient</h3>
+                    <span class="card-role">Gestion interne des alertes</span>
+                    <ul>
+                        <li>Envoi d'alertes entre services</li>
+                        <li>Notification inter-services</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">69</div>
+                    <h3 class="card-title">BlobPathFileInternalClient</h3>
+                    <span class="card-role">Gestion des fichiers et documents</span>
+                    <ul>
+                        <li>Upload et téléchargement de fichiers</li>
+                        <li>Gestion du stockage de documents</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">70</div>
+                    <h3 class="card-title">UserInternalClient</h3>
+                    <span class="card-role">Communication interne pour les utilisateurs</span>
+                    <ul>
+                        <li>Échange infos utilisateur entre services</li>
+                        <li>Synchronisation données utilisateur</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="validation" class="section">
+            <h2 class="section-title">Services de Validation et Sérialisation</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">71</div>
+                    <h3 class="card-title">CustomLocalDateTimeConverter</h3>
+                    <span class="card-role">Conversion personnalisée des dates et heures</span>
+                    <ul>
+                        <li>Sérialisation/désérialisation LocalDateTime</li>
+                        <li>Gestion formats de date personnalisés</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">72</div>
+                    <h3 class="card-title">InputStreamResourceSerializer</h3>
+                    <span class="card-role">Sérialisation des ressources de flux</span>
+                    <ul>
+                        <li>Conversion InputStreamResource en JSON</li>
+                        <li>Gestion flux de données pour l'API</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">73</div>
+                    <h3 class="card-title">ValidAccountNumberValidator</h3>
+                    <span class="card-role">Validation des numéros de compte</span>
+                    <ul>
+                        <li>Validation format numéros de compte</li>
+                        <li>Vérification conformité identifiants bancaires</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">74</div>
+                    <h3 class="card-title">PhoneValidator</h3>
+                    <span class="card-role">Validation des numéros de téléphone</span>
+                    <ul>
+                        <li>Validation format numéros de téléphone</li>
+                        <li>Vérification conformité internationale</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">75</div>
+                    <h3 class="card-title">FieldListValidator</h3>
+                    <span class="card-role">Validation des listes de champs pour rapports</span>
+                    <ul>
+                        <li>Validation champs de rapports</li>
+                        <li>Vérification cohérence des données</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="auth" class="section">
+            <h2 class="section-title">Services d'Autorisation</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">76</div>
+                    <h3 class="card-title">JwtTokenHandlerInterceptor</h3>
+                    <span class="card-role">Interception et traitement des tokens JWT</span>
+                    <ul>
+                        <li>Validation tokens JWT dans requêtes</li>
+                        <li>Extraction infos d'autorisation</li>
+                        <li>Gestion sécurité des API</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">77</div>
+                    <h3 class="card-title">UserPayloadHolder</h3>
+                    <span class="card-role">Gestion du contexte utilisateur</span>
+                    <ul>
+                        <li>Stockage thread-local infos utilisateur</li>
+                        <li>Accès sécurisé au contexte d'authentification</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PKF Internet Banking - Common Library Documentation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Infrastructure de base pour tous les services PKF Internet
+            Banking</p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop"></div>
+
+    <script>
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTop.classList.toggle('show', window.pageYOffset > 300);
+        });
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+
+</html>

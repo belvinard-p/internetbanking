@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKF Banking - Services Utilisateur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #fff;
+            --text-dim: #a0a0c0;
+            --accent: #10b981;
+            --gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-alt: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        header {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .home-btn::before {
+            content: '🏠';
+            font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        nav {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 100px;
+            z-index: 99;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--gradient);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-num {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-alt);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-alt);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.3);
+        }
+
+        .card-num {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-role {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .domain-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .domain-section h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .domain-section ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .domain-section li {
+            padding: 0.8rem 0 0.8rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        .domain-section li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .domain-section strong {
+            color: var(--text);
+        }
+
+        footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+        }
+
+        .scroll-top::before {
+            content: '↑';
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                position: relative;
+                top: 0;
+            }
+
+            .domain-section ul {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="landingPage.html" class="home-btn">Accueil</a>
+        <h1>PKF Internet Banking - User Service</h1>
+        <p class="subtitle">Documentation Complète des Services de Gestion Utilisateur</p>
+    </header>
+
+    <nav>
+        <a href="#core" class="nav-btn">Services Principaux</a>
+        <a href="#account" class="nav-btn">Gestion Comptes</a>
+        <a href="#subscription" class="nav-btn">Abonnements</a>
+        <a href="#security" class="nav-btn">Sécurité</a>
+        <a href="#support" class="nav-btn">Support</a>
+        <a href="#specialized" class="nav-btn">Services Spécialisés</a>
+    </nav>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">55+</div>
+                <div class="stat-label">Services</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">27</div>
+                <div class="stat-label">Services Core</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">8</div>
+                <div class="stat-label">Domaines</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">CBS</div>
+                <div class="stat-label">Intégration</div>
+            </div>
+        </div>
+
+        <section id="core" class="section">
+            <h2 class="section-title">Services Principaux</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">29</div>
+                    <h3 class="card-title">UserService</h3>
+                    <span class="card-role">Gestion complète des utilisateurs finaux et administrateurs</span>
+                    <ul>
+                        <li>Récupération infos utilisateur actuel</li>
+                        <li>Recherche clients dans CBS</li>
+                        <li>Pagination et filtrage</li>
+                        <li>Gestion utilisateurs bloqués</li>
+                        <li>Gestion administrateurs</li>
+                        <li>Mise à jour profils</li>
+                        <li>Gestion avatars et fichiers</li>
+                        <li>Gestion sessions et appareils</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">30</div>
+                    <h3 class="card-title">UserAccountService</h3>
+                    <span class="card-role">Gestion des comptes bancaires des utilisateurs</span>
+                    <ul>
+                        <li>Synchronisation CBS</li>
+                        <li>Affichage et masquage comptes</li>
+                        <li>Noms de comptes personnalisés</li>
+                        <li>Permissions sous-utilisateurs</li>
+                        <li>Synchronisation soldes</li>
+                        <li>Traitement asynchrone par lots</li>
+                        <li>Validation accès comptes</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">31</div>
+                    <h3 class="card-title">AdminUserAccountService</h3>
+                    <span class="card-role">Gestion administrative des comptes utilisateur</span>
+                    <ul>
+                        <li>Récupération comptes par ID</li>
+                        <li>Gestion masquage comptes</li>
+                        <li>Désactivation facturation automatique</li>
+                        <li>Notification utilisateurs</li>
+                        <li>Validation existence comptes</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">32</div>
+                    <h3 class="card-title">BaseUserService</h3>
+                    <span class="card-role">Fonctionnalités communes gestion utilisateur</span>
+                    <ul>
+                        <li>Mise à jour champs de base</li>
+                        <li>Historique modifications</li>
+                        <li>Validation permissions</li>
+                        <li>Conversion entités</li>
+                        <li>Gestion sous-utilisateurs</li>
+                        <li>Utilisateurs corporatifs</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="account" class="section">
+            <h2 class="section-title">Gestion des Comptes et Produits</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">33</div>
+                    <h3 class="card-title">BankService</h3>
+                    <span class="card-role">Gestion des informations bancaires</span>
+                    <ul>
+                        <li>Synchronisation avec CBS</li>
+                        <li>Création et mise à jour banques</li>
+                        <li>Gestion cache</li>
+                        <li>Comptage banques externes</li>
+                        <li>Banque par défaut</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">34</div>
+                    <h3 class="card-title">BranchService</h3>
+                    <span class="card-role">Gestion des succursales bancaires</span>
+                    <ul>
+                        <li>Synchronisation succursales CBS</li>
+                        <li>Recherche par code</li>
+                        <li>Cache avec éviction automatique</li>
+                        <li>Validation existence</li>
+                        <li>Création et mise à jour</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">35</div>
+                    <h3 class="card-title">PackageService</h3>
+                    <span class="card-role">Gestion des packages de services bancaires</span>
+                    <ul>
+                        <li>Création avec tarification</li>
+                        <li>Packages gratuits et payants</li>
+                        <li>Validation utilisateurs actifs</li>
+                        <li>Gestion statut packages</li>
+                        <li>Tarification multi-devises</li>
+                        <li>Synchronisation permissions</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">36</div>
+                    <h3 class="card-title">ProductService</h3>
+                    <span class="card-role">Gestion des produits bancaires</span>
+                    <ul>
+                        <li>Création produits avec comptes</li>
+                        <li>Validation numéros compte CBS</li>
+                        <li>Gestion statut produits</li>
+                        <li>Validation devises</li>
+                        <li>Comptes produits par type</li>
+                        <li>Validation produit actif</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="subscription" class="section">
+            <h2 class="section-title">Abonnements et Facturation</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">47</div>
+                    <h3 class="card-title">SubscriptionBillService</h3>
+                    <span class="card-role">Gestion de la facturation des abonnements</span>
+                    <ul>
+                        <li>Génération automatique factures</li>
+                        <li>Gestion échéances</li>
+                        <li>Rappels de paiement</li>
+                        <li>Traitement paiements</li>
+                        <li>Rapports de facturation</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">48</div>
+                    <h3 class="card-title">SubscriptionService</h3>
+                    <span class="card-role">Gestion des abonnements utilisateur</span>
+                    <ul>
+                        <li>Création et activation</li>
+                        <li>Gestion packages</li>
+                        <li>Renouvellement automatique</li>
+                        <li>Suspension et résiliation</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="security" class="section">
+            <h2 class="section-title">Sécurité et Authentification</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">46</div>
+                    <h3 class="card-title">SessionService</h3>
+                    <span class="card-role">Gestion des sessions utilisateur</span>
+                    <ul>
+                        <li>Création et validation sessions</li>
+                        <li>Gestion appareils</li>
+                        <li>Détection nouveaux appareils</li>
+                        <li>Expiration automatique</li>
+                        <li>Sécurisation tokens JWT</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">53</div>
+                    <h3 class="card-title">TwoFactorAuthService</h3>
+                    <span class="card-role">Authentification à deux facteurs</span>
+                    <ul>
+                        <li>Génération et validation OTP</li>
+                        <li>Méthodes multiples (SMS, email, TOTP)</li>
+                        <li>Configuration sécurité</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">54</div>
+                    <h3 class="card-title">UserBlockerService</h3>
+                    <span class="card-role">Gestion des blocages utilisateur</span>
+                    <ul>
+                        <li>Blocages temporaires et permanents</li>
+                        <li>Gestion raisons de blocage</li>
+                        <li>Déblocage automatique</li>
+                        <li>Historique pour audit</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">55</div>
+                    <h3 class="card-title">UserRegistrationApproveService</h3>
+                    <span class="card-role">Gestion des approbations d'inscription</span>
+                    <ul>
+                        <li>Traitement demandes en attente</li>
+                        <li>Workflow multi-niveaux</li>
+                        <li>Notification décisions</li>
+                        <li>Gestion documents requis</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="support" class="section">
+            <h2 class="section-title">Support et Utilitaires</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">37</div>
+                    <h3 class="card-title">BankInfoService</h3>
+                    <span class="card-role">Information bancaire générale</span>
+                    <ul>
+                        <li>Informations consolidées</li>
+                        <li>Détails de contact</li>
+                        <li>Infos système UI</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">38</div>
+                    <h3 class="card-title">BlobFileService</h3>
+                    <span class="card-role">Gestion des fichiers et documents</span>
+                    <ul>
+                        <li>Upload et stockage cloud</li>
+                        <li>Validation types fichiers</li>
+                        <li>Gestion permissions</li>
+                        <li>Avatars et documents</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">43</div>
+                    <h3 class="card-title">DocumentsService</h3>
+                    <span class="card-role">Gestion des documents utilisateur</span>
+                    <ul>
+                        <li>Upload documents d'identité</li>
+                        <li>Documents justificatifs</li>
+                        <li>Classification et stockage sécurisé</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">51</div>
+                    <h3 class="card-title">TicketService</h3>
+                    <span class="card-role">Système de tickets de support</span>
+                    <ul>
+                        <li>Création et suivi tickets</li>
+                        <li>Attribution aux équipes</li>
+                        <li>Cycle de vie complet</li>
+                        <li>Communication clients</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">44</div>
+                    <h3 class="card-title">HealthCheckService</h3>
+                    <span class="card-role">Surveillance de la santé du système</span>
+                    <ul>
+                        <li>Vérification services critiques</li>
+                        <li>Monitoring connexions DB</li>
+                        <li>Rapports pour exploitation</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">40</div>
+                    <h3 class="card-title">ChangeTableHistoryService</h3>
+                    <span class="card-role">Historique des modifications</span>
+                    <ul>
+                        <li>Enregistrement modifications</li>
+                        <li>Traçabilité complète</li>
+                        <li>Audit conformité réglementaire</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="specialized" class="section">
+            <h2 class="section-title">Services Spécialisés par Domaine</h2>
+
+            <div class="domain-section">
+                <h3>Services d'Alerte (Alert)</h3>
+                <ul>
+                    <li><strong>AlertDispatcher</strong> : Distribution des alertes aux destinataires</li>
+                    <li><strong>AlertProcessingService</strong> : Traitement et formatage des alertes</li>
+                    <li><strong>AlertService</strong> : Gestion générale du système d'alertes</li>
+                    <li><strong>UserAlertService</strong> : Alertes spécifiques aux utilisateurs</li>
+                </ul>
+            </div>
+
+            <div class="domain-section">
+                <h3>Services de Bénéficiaires (Beneficiary)</h3>
+                <ul>
+                    <li><strong>PartnerBeneficiaryService</strong> : Gestion des bénéficiaires partenaires</li>
+                    <li><strong>UserBeneficiaryService</strong> : Gestion des bénéficiaires utilisateur</li>
+                </ul>
+            </div>
+
+            <div class="domain-section">
+                <h3>Services de Cartes (Card)</h3>
+                <ul>
+                    <li><strong>CardRequestService</strong> : Traitement des demandes de cartes</li>
+                    <li><strong>CustomCardService</strong> : Gestion des cartes personnalisées</li>
+                </ul>
+            </div>
+
+            <div class="domain-section">
+                <h3>Services de Chéquiers (Checkbook)</h3>
+                <ul>
+                    <li><strong>CheckbookRequestService</strong> : Traitement des demandes de chéquiers</li>
+                    <li><strong>CheckbookRetryableService</strong> : Gestion des tentatives de commande</li>
+                    <li><strong>CheckbookTypeService</strong> : Gestion des types de chéquiers</li>
+                </ul>
+            </div>
+
+            <div class="domain-section">
+                <h3>Services FlashCash</h3>
+                <ul>
+                    <li><strong>AdminFlashCashService</strong> : Administration des services FlashCash</li>
+                    <li><strong>FlashCashService</strong> : Gestion des transactions FlashCash utilisateur</li>
+                </ul>
+            </div>
+
+            <div class="domain-section">
+                <h3>Services PDF</h3>
+                <ul>
+                    <li><strong>PDFAccountDetailsBuilder</strong> : Construction de documents PDF pour détails de compte
+                    </li>
+                    <li><strong>PDFAccountService</strong> : Génération de rapports PDF de comptes</li>
+                    <li><strong>PDFConstants</strong> : Constantes pour la génération PDF</li>
+                </ul>
+            </div>
+
+            <div class="domain-section">
+                <h3>Services de Planification (Scheduler)</h3>
+                <ul>
+                    <li><strong>AlertScheduler</strong> : Planification des tâches d'alerte</li>
+                    <li><strong>BankScheduler</strong> : Synchronisation planifiée des données bancaires</li>
+                    <li><strong>BranchScheduler</strong> : Synchronisation planifiée des succursales</li>
+                    <li><strong>CheckbookTypeScheduler</strong> : Mise à jour planifiée des types de chéquiers</li>
+                    <li><strong>SubscriptionScheduler</strong> : Traitement planifié des abonnements</li>
+                </ul>
+            </div>
+
+            <div class="domain-section">
+                <h3>Services de Transfert (Transfer)</h3>
+                <ul>
+                    <li><strong>SwiftTransferInternalService</strong> : Traitement interne des transferts SWIFT</li>
+                    <li><strong>TransferInternalService</strong> : Gestion des transferts internes</li>
+                    <li><strong>CurrencyExchangeRequestInternalService</strong> : Traitement des demandes de change</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PKF Internet Banking - User Service Documentation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Cœur de la gestion des utilisateurs dans l'écosystème PKF
+            Internet Banking</p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop"></div>
+
+    <script>
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTop.classList.toggle('show', window.pageYOffset > 300);
+        });
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+
+</html>

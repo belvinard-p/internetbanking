@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKF Banking - Payment Service</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #fff;
+            --text-dim: #a0a0c0;
+            --accent: #f59e0b;
+            --gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-alt: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        header {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .home-btn::before {
+            content: '🏠';
+            font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        nav {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 100px;
+            z-index: 99;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--gradient);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-num {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-alt);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-alt);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.3);
+        }
+
+        .card-num {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-endpoint {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: block;
+            font-family: 'Courier New', monospace;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .endpoint-list {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .endpoint-item {
+            padding: 0.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .endpoint-method {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+        }
+
+        .method-get {
+            background: #10b981;
+            color: white;
+        }
+
+        .method-post {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .method-put {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .method-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .info-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .info-card ul {
+            list-style: none;
+        }
+
+        .info-card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+        }
+
+        .info-card li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .info-card code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent);
+        }
+
+        footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+        }
+
+        .scroll-top::before {
+            content: '↑';
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="landingPage.html" class="home-btn">Accueil</a>
+        <h1>PKF Banking - Payment Service</h1>
+        <p class="subtitle">Microservice Spring Boot pour la Gestion des Paiements et Transferts</p>
+    </header>
+
+    <nav>
+        <a href="#overview" class="nav-btn">Vue d'ensemble</a>
+        <a href="#services" class="nav-btn">Services Principaux</a>
+        <a href="#admin" class="nav-btn">Administration</a>
+        <a href="#features" class="nav-btn">Fonctionnalités</a>
+        <a href="#config" class="nav-btn">Configuration</a>
+        <a href="#security" class="nav-btn">Sécurité</a>
+    </nav>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">11</div>
+                <div class="stat-label">Services API</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">3</div>
+                <div class="stat-label">Services Internes</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">Spring</div>
+                <div class="stat-label">Boot 3</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">Java</div>
+                <div class="stat-label">Version 21</div>
+            </div>
+        </div>
+
+        <section id="overview" class="section">
+            <h2 class="section-title">Vue d'ensemble</h2>
+            <div class="info-card">
+                <h3>Architecture Technique</h3>
+                <ul>
+                    <li><strong>Framework:</strong> Spring Boot 3</li>
+                    <li><strong>Java Version:</strong> 21</li>
+                    <li><strong>Base de données:</strong> PostgreSQL</li>
+                    <li><strong>Cache:</strong> Redis</li>
+                    <li><strong>Documentation API:</strong> OpenAPI/Swagger</li>
+                </ul>
+            </div>
+            <p style="color: var(--text-dim); font-size: 1.1rem; line-height: 1.8;">
+                Le service de paiement fournit des ressources API pour traiter les transferts et les paiements dans le
+                système bancaire PKF Internet Banking.
+                Il s'agit d'un microservice Spring Boot qui gère toutes les opérations financières, y compris les
+                paiements, les transferts, les prêts,
+                les devises et les statistiques.
+            </p>
+        </section>
+
+        <section id="services" class="section">
+            <h2 class="section-title">Services Principaux</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">1</div>
+                    <h3 class="card-title">PaymentService</h3>
+                    <span class="card-endpoint">/api/v1/payment/payments</span>
+                    <ul>
+                        <li>Création de paiements</li>
+                        <li>Récupération par ID</li>
+                        <li>Consultation derniers paiements</li>
+                        <li>Support paiements récurrents</li>
+                    </ul>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-post">POST</span>
+                            /payments
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-get">GET</span>
+                            /payments/{id}
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-get">GET</span>
+                            /payments/last
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">2</div>
+                    <h3 class="card-title">TransferService</h3>
+                    <span class="card-endpoint">/api/v1/payment/transfers</span>
+                    <ul>
+                        <li>Transferts simples et multiples</li>
+                        <li>Transferts via fichier CSV</li>
+                        <li>Transferts différés/programmés</li>
+                        <li>Validation transferts multiples</li>
+                        <li>Documents justificatifs</li>
+                    </ul>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-post">POST</span>
+                            /transfers
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-post">POST</span>
+                            /transfers/csv
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-put">PUT</span>
+                            /transfers/{id}/deferred
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-get">GET</span>
+                            /transfers/deferred
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-delete">DELETE</span>
+                            /transfers/{id}/deferred
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">3</div>
+                    <h3 class="card-title">CurrencyService</h3>
+                    <span class="card-endpoint">/api/v1/payment/currencies</span>
+                    <ul>
+                        <li>Consultation taux de change</li>
+                        <li>Génération PDF des taux</li>
+                        <li>Demandes d'échange de devises</li>
+                    </ul>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-get">GET</span>
+                            /currencies/rates
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-get">GET</span>
+                            /currencies/rates/pdf
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">4</div>
+                    <h3 class="card-title">LoanService</h3>
+                    <span class="card-endpoint">/api/v1/payment/loans</span>
+                    <ul>
+                        <li>Consultation des prêts</li>
+                        <li>Gestion paiements de prêts</li>
+                        <li>Synchronisation avec CBS</li>
+                    </ul>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-get">GET</span>
+                            /loans
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-get">GET</span>
+                            /loans/{id}/payments
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">5</div>
+                    <h3 class="card-title">TaxService</h3>
+                    <span class="card-endpoint">/api/v1/payment/taxes</span>
+                    <ul>
+                        <li>Validation des taxes</li>
+                        <li>Confirmation paiements taxes</li>
+                    </ul>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-post">POST</span>
+                            /taxes/validate
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-post">POST</span>
+                            /taxes/confirm-payment
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">6</div>
+                    <h3 class="card-title">OperationFeesService</h3>
+                    <span class="card-endpoint">/api/v1/payment/fees</span>
+                    <ul>
+                        <li>Calcul des frais d'opération</li>
+                    </ul>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-post">POST</span>
+                            /fees/calculate
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">7</div>
+                    <h3 class="card-title">SubscriptionBillService</h3>
+                    <span class="card-endpoint">/api/v1/payment/subscription-bills</span>
+                    <ul>
+                        <li>Consultation factures d'abonnement</li>
+                        <li>Paiement des factures</li>
+                    </ul>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-get">GET</span>
+                            /subscription-bills
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-put">PUT</span>
+                            /subscription-bills/{id}/pay
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">8</div>
+                    <h3 class="card-title">StatisticService</h3>
+                    <span class="card-endpoint">/api/v1/payment/statistic/*</span>
+                    <ul>
+                        <li>Statistiques agrégées</li>
+                        <li>Statistiques des factures</li>
+                        <li>Statistiques des abonnements</li>
+                    </ul>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-get">GET</span>
+                            /statistic/aggregator
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-get">GET</span>
+                            /statistic/bills
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-get">GET</span>
+                            /statistic/subscriptions
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">9</div>
+                    <h3 class="card-title">SwiftOrderService</h3>
+                    <span class="card-endpoint">/api/v1/payment/swift-orders</span>
+                    <ul>
+                        <li>Gestion ordres SWIFT internationaux</li>
+                        <li>Transferts internationaux</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">10</div>
+                    <h3 class="card-title">DepositService</h3>
+                    <span class="card-endpoint">/api/v1/payment/deposits</span>
+                    <ul>
+                        <li>Gestion des types de dépôts</li>
+                        <li>Consultation des dépôts</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">11</div>
+                    <h3 class="card-title">Services Internes</h3>
+                    <span class="card-endpoint">/api/internal/v1/payment/*</span>
+                    <ul>
+                        <li>Réservation de fonds</li>
+                        <li>Frais pour clients internes</li>
+                        <li>Transferts internes</li>
+                    </ul>
+                    <div class="endpoint-list">
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-post">POST</span>
+                            /funds-reservations
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-post">POST</span>
+                            /fees
+                        </div>
+                        <div class="endpoint-item">
+                            <span class="endpoint-method method-post">POST</span>
+                            /transfers
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin" class="section">
+            <h2 class="section-title">Services d'Administration</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">A1</div>
+                    <h3 class="card-title">LoanProductService</h3>
+                    <ul>
+                        <li>Gestion des produits de prêt</li>
+                        <li>Configuration conditions de prêt</li>
+                        <li>Paramétrage des taux d'intérêt</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">A2</div>
+                    <h3 class="card-title">CurrencyExchangeRequestService</h3>
+                    <ul>
+                        <li>Traitement demandes d'échange</li>
+                        <li>Approbation/rejet des demandes</li>
+                        <li>Gestion workflow d'approbation</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="section">
+            <h2 class="section-title">Fonctionnalités Transversales</h2>
+
+            <div class="info-card">
+                <h3>Authentification et Autorisation</h3>
+                <ul>
+                    <li>Intégration avec le service d'authentification</li>
+                    <li>Contrôle d'accès basé sur les rôles (USER, MAIN_SUB_USER, SUB_USER)</li>
+                    <li>Permissions granulaires pour chaque opération</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Notifications</h3>
+                <ul>
+                    <li>Notifications par email et SMS</li>
+                    <li>Configurable via les variables d'environnement</li>
+                    <li>Notifications pour transferts et paiements</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Planification et Tâches Automatisées</h3>
+                <ul>
+                    <li>Synchronisation des devises</li>
+                    <li>Traitement des paiements récurrents</li>
+                    <li>Mise à jour des taux de change</li>
+                    <li>Traitement des factures automatiques</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Intégrations Externes</h3>
+                <ul>
+                    <li><strong>CBS Adapter:</strong> Interface avec le système bancaire central</li>
+                    <li><strong>Blob Path Service:</strong> Stockage de fichiers (Azure Blob/MinIO)</li>
+                    <li><strong>Settings Service:</strong> Configuration dynamique</li>
+                    <li><strong>Transaction Service:</strong> Historique des transactions</li>
+                    <li><strong>User Service:</strong> Gestion des utilisateurs</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Gestion des Fichiers</h3>
+                <ul>
+                    <li>Support des documents justificatifs</li>
+                    <li>Téléchargement de fichiers CSV pour les transferts en lot</li>
+                    <li>Génération de PDF pour les rapports</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Validation et Sécurité</h3>
+                <ul>
+                    <li>Validation des données d'entrée</li>
+                    <li>Gestion des erreurs centralisée</li>
+                    <li>Logging et monitoring avec Sentry</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="config" class="section">
+            <h2 class="section-title">Configuration</h2>
+
+            <div class="info-card">
+                <h3>Variables d'Environnement Principales</h3>
+                <ul>
+                    <li><code>PORT</code> - Port du service</li>
+                    <li><code>DB_URL</code>, <code>DB_USERNAME</code>, <code>DB_PASSWORD</code> - Configuration base de
+                        données</li>
+                    <li><code>REDIS_HOST</code>, <code>REDIS_PORT</code>, <code>REDIS_PASSWORD</code> - Configuration
+                        Redis</li>
+                    <li><code>CBS_ADAPTER_URI</code> - URI de l'adaptateur CBS</li>
+                    <li><code>AUTH_URI</code>, <code>TRANSACTION_URI</code>, <code>USER_URI</code> - URIs des autres
+                        services</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Fonctionnalités Configurables</h3>
+                <ul>
+                    <li><code>FEATURE_SWIFT_DISABLED</code> - Désactiver les fonctionnalités SWIFT</li>
+                    <li><code>FEATURE_NRA_DISABLED</code> - Désactiver les fonctionnalités de taxes</li>
+                    <li><code>CROSS_CURRENCY_PAYMENT_ENABLED</code> - Paiements inter-devises</li>
+                    <li><code>FUNDS_RESERVATION_ENABLED</code> - Réservation de fonds</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Surveillance et Maintenance</h3>
+                <ul>
+                    <li><strong>Health Check:</strong> <code>/api/v1/payment/health-check</code></li>
+                    <li><strong>Swagger UI:</strong> <code>/payment/internal/swagger-ui.html</code></li>
+                    <li><strong>API Docs:</strong> <code>/payment/internal/v3/api-docs</code></li>
+                    <li><strong>Logs:</strong> Logs rotatifs dans le répertoire <code>/logs</code></li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Déploiement</h3>
+                <ul>
+                    <li><strong>Docker:</strong> Image Docker disponible</li>
+                    <li><strong>Docker Compose:</strong> Support avec dépendances</li>
+                    <li><strong>Environnements:</strong> Configuration par profils Spring</li>
+                    <li><strong>Secrets:</strong> Support Azure Key Vault et HashiCorp Vault</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="security" class="section">
+            <h2 class="section-title">Sécurité</h2>
+
+            <div class="info-card">
+                <h3>Authentification</h3>
+                <ul>
+                    <li>JWT tokens via le service d'authentification</li>
+                    <li>Validation des tokens pour les routes protégées</li>
+                    <li>Expiration automatique des tokens</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Permissions</h3>
+                <ul>
+                    <li>Contrôle d'accès granulaire</li>
+                    <li>Séparation des permissions utilisateur/admin</li>
+                    <li>Support des sous-utilisateurs avec permissions limitées</li>
+                    <li>Validation des limites de transaction</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Audit</h3>
+                <ul>
+                    <li>Traçabilité des opérations financières</li>
+                    <li>Logs d'audit pour les demandes d'échange de devises</li>
+                    <li>Historique complet des transactions</li>
+                    <li>Conformité réglementaire</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PKF Internet Banking - Payment Service Documentation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Microservice Spring Boot pour la gestion des paiements et
+            transferts</p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop"></div>
+
+    <script>
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTop.classList.toggle('show', window.pageYOffset > 300);
+        });
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+
+</html>

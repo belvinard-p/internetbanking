@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKF Banking - BlobPath Service</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #fff;
+            --text-dim: #a0a0c0;
+            --accent: #84cc16;
+            --gradient: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+            --gradient-alt: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(132, 204, 22, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        header {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(132, 204, 22, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(132, 204, 22, 0.5);
+        }
+
+        .home-btn::before {
+            content: '🏠';
+            font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        nav {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 100px;
+            z-index: 99;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--gradient);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-num {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-alt);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-alt);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(132, 204, 22, 0.5);
+            box-shadow: 0 0 40px rgba(132, 204, 22, 0.3);
+        }
+
+        .card-num {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-role {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .intro-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .intro-card p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .info-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .info-card ul {
+            list-style: none;
+        }
+
+        .info-card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+        }
+
+        .info-card li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .info-card code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent);
+        }
+
+        .container-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .container-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .container-name {
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+        }
+
+        .container-desc {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+        }
+
+        .scroll-top::before {
+            content: '↑';
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="landingPage.html" class="home-btn">Accueil</a>
+        <h1>PKF Banking - BlobPath Service</h1>
+        <p class="subtitle">Service de Stockage de Fichiers Cloud-Agnostique</p>
+    </header>
+
+    <nav>
+        <a href="#overview" class="nav-btn">Vue d'ensemble</a>
+        <a href="#services" class="nav-btn">Services</a>
+        <a href="#containers" class="nav-btn">Conteneurs</a>
+        <a href="#backends" class="nav-btn">Backends</a>
+        <a href="#security" class="nav-btn">Sécurité</a>
+    </nav>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">3</div>
+                <div class="stat-label">Backends</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">8</div>
+                <div class="stat-label">Conteneurs</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">URLs</div>
+                <div class="stat-label">Signées</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">50MB</div>
+                <div class="stat-label">Taille Max</div>
+            </div>
+        </div>
+
+        <section id="overview" class="section">
+            <h2 class="section-title">Vue d'ensemble</h2>
+            <div class="intro-card">
+                <p>
+                    Le service BlobPath est un service de stockage de fichiers cloud-agnostique qui fournit une
+                    interface unifiée
+                    pour stocker des fichiers sur différents backends de stockage (Microsoft Azure Blob Storage, MinIO,
+                    ou système
+                    de fichiers local). Il est conçu avec des backends pluggables et une abstraction propre, simplifiant
+                    l'intégration
+                    du stockage d'objets dans les systèmes distribués et les microservices.
+                </p>
+            </div>
+            <div class="info-card">
+                <h3>Architecture</h3>
+                <ul>
+                    <li><strong>Framework:</strong> Spring Boot 3</li>
+                    <li><strong>Java Version:</strong> 21</li>
+                    <li><strong>Type:</strong> Service de stockage de fichiers</li>
+                    <li><strong>Backends:</strong> Azure Blob Storage, MinIO, Système de fichiers local</li>
+                    <li><strong>Pattern:</strong> Strategy Pattern pour les différents backends</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="services" class="section">
+            <h2 class="section-title">Services Principaux</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">1</div>
+                    <h3 class="card-title">FileService</h3>
+                    <span class="card-role">Service de gestion des fichiers</span>
+                    <ul>
+                        <li>Upload fichiers simples et multiples</li>
+                        <li>Téléchargement avec détection MIME</li>
+                        <li>Génération URLs signées</li>
+                        <li>Suppression de fichiers</li>
+                        <li>Gestion métadonnées</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">2</div>
+                    <h3 class="card-title">BlobService</h3>
+                    <span class="card-role">Service de stockage blob</span>
+                    <ul>
+                        <li>Upload avec génération UUID</li>
+                        <li>Téléchargement par identifiant</li>
+                        <li>Suppression de fichiers</li>
+                        <li>Gestion conteneurs/buckets</li>
+                        <li>3 implémentations (Azure, MinIO, FileSystem)</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">3</div>
+                    <h3 class="card-title">SignedUrlGenerator</h3>
+                    <span class="card-role">Génération d'URLs signées</span>
+                    <ul>
+                        <li>URLs avec expiration</li>
+                        <li>Validation des signatures</li>
+                        <li>Contrôle d'accès temporaire</li>
+                        <li>Support inline/attachment</li>
+                        <li>3 implémentations (Azure, MinIO, FileSystem)</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">4</div>
+                    <h3 class="card-title">TikaContentTypeDetector</h3>
+                    <span class="card-role">Détection de type MIME</span>
+                    <ul>
+                        <li>Détection automatique du type</li>
+                        <li>Support tous types de fichiers</li>
+                        <li>Validation du type de fichier</li>
+                        <li>Sécurité renforcée</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="containers" class="section">
+            <h2 class="section-title">Conteneurs de Stockage</h2>
+            <div class="container-grid">
+                <div class="container-item">
+                    <div class="container-name">AVATAR</div>
+                    <div class="container-desc">Photos de profil utilisateurs</div>
+                </div>
+                <div class="container-item">
+                    <div class="container-name">CUSTOM_CARD</div>
+                    <div class="container-desc">Cartes personnalisées</div>
+                </div>
+                <div class="container-item">
+                    <div class="container-name">JUSTIFICATION_DOCUMENT</div>
+                    <div class="container-desc">Documents justificatifs</div>
+                </div>
+                <div class="container-item">
+                    <div class="container-name">OPERATION_DOCUMENT</div>
+                    <div class="container-desc">Documents d'opérations</div>
+                </div>
+                <div class="container-item">
+                    <div class="container-name">SETTING</div>
+                    <div class="container-desc">Fichiers de configuration</div>
+                </div>
+                <div class="container-item">
+                    <div class="container-name">SWIFT_TRANSFER</div>
+                    <div class="container-desc">Documents transferts SWIFT</div>
+                </div>
+                <div class="container-item">
+                    <div class="container-name">SYSTEM_CONFIG</div>
+                    <div class="container-desc">Configuration système</div>
+                </div>
+                <div class="container-item">
+                    <div class="container-name">TICKET</div>
+                    <div class="container-desc">Documents tickets support</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="backends" class="section">
+            <h2 class="section-title">Configuration par Backend</h2>
+
+            <div class="info-card">
+                <h3>Azure Blob Storage (Profil: azure)</h3>
+                <ul>
+                    <li><code>AZURE_STORAGE_ACCOUNT_NAME</code> - Nom du compte de stockage</li>
+                    <li><code>AZURE_STORAGE_ACCOUNT_KEY</code> - Clé d'accès du compte</li>
+                    <li><code>SIGNED_URL_TTL</code> - Durée de vie des URLs signées (défaut: 1d)</li>
+                    <li><strong>Avantages:</strong> Stockage haute disponibilité, URLs signées natives, Intégration
+                        Azure</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>MinIO (Profil: minio)</h3>
+                <ul>
+                    <li><code>MINIO_ENDPOINT</code> - URL du serveur MinIO</li>
+                    <li><code>MINIO_ACCESS_KEY</code> - Clé d'accès MinIO</li>
+                    <li><code>MINIO_SECRET_KEY</code> - Clé secrète MinIO</li>
+                    <li><code>MINIO_PART_SIZE</code> - Taille des parties pour upload (défaut: 10MB)</li>
+                    <li><code>SIGNED_URL_TTL</code> - Durée de vie des URLs signées (défaut: 1d)</li>
+                    <li><strong>Avantages:</strong> Compatible S3, Déploiement on-premise, Performance optimisée</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Système de Fichiers (Profil: filesystem)</h3>
+                <ul>
+                    <li><code>FILESYSTEM_DESTINATION_DIR</code> - Répertoire de stockage</li>
+                    <li><code>FILESYSTEM_URL_SIGNING_KEY</code> - Clé de signature des URLs</li>
+                    <li><code>SIGNED_URL_TTL</code> - Durée de vie des URLs signées (défaut: 1d)</li>
+                    <li><strong>Avantages:</strong> Stockage local simple, Pas de dépendances externes, URLs signées
+                        HMAC</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="security" class="section">
+            <h2 class="section-title">Sécurité et Configuration</h2>
+
+            <div class="info-card">
+                <h3>Contrôle d'Accès</h3>
+                <ul>
+                    <li><strong>URLs signées:</strong> Accès temporaire et sécurisé</li>
+                    <li><strong>Validation de signature:</strong> Vérification HMAC</li>
+                    <li><strong>Expiration:</strong> Limitation dans le temps</li>
+                    <li><strong>Conteneurs isolés:</strong> Séparation logique des données</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Validation des Fichiers</h3>
+                <ul>
+                    <li><strong>Type MIME:</strong> Vérification du type de contenu</li>
+                    <li><strong>Taille:</strong> Limitation de la taille (défaut: 50MB)</li>
+                    <li><strong>Nom de fichier:</strong> Validation des caractères autorisés</li>
+                    <li><strong>Extension:</strong> Contrôle des extensions de fichiers</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Paramètres de Signature des URLs</h3>
+                <ul>
+                    <li><code>sig_id</code> - Identifiant du fichier</li>
+                    <li><code>sig_filename</code> - Nom du fichier</li>
+                    <li><code>sig_container_name</code> - Nom du conteneur</li>
+                    <li><code>sig_content_disposition</code> - Type de disposition (inline/attachment)</li>
+                    <li><code>sig_nonce</code> - Nombre aléatoire pour unicité</li>
+                    <li><code>sig_not_valid_before</code> - Date de début de validité</li>
+                    <li><code>sig_expires_at</code> - Date d'expiration</li>
+                    <li><code>sig</code> - Signature HMAC</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Configuration Générale</h3>
+                <ul>
+                    <li><code>PORT</code> - Port du service</li>
+                    <li><code>APPLICATION_NAME</code> - Nom de l'application (défaut: BLOBPATH)</li>
+                    <li><code>SPRING_PROFILES_ACTIVE</code> - Profil actif (azure/minio/filesystem)</li>
+                    <li><code>MAX_FILE_SIZE</code> - Taille maximale par fichier (défaut: 50MB)</li>
+                    <li><code>MAX_REQUEST_SIZE</code> - Taille maximale de requête (défaut: 50MB)</li>
+                    <li><code>CONNECTION_TIMEOUT</code> - Timeout de connexion (défaut: 15s)</li>
+                    <li><code>READ_TIMEOUT</code> - Timeout de lecture (défaut: 15s)</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Avantages du Service</h3>
+                <ul>
+                    <li><strong>Flexibilité:</strong> Multi-backend, cloud-agnostique, configuration adaptable</li>
+                    <li><strong>Sécurité:</strong> URLs signées, validation complète, isolation des conteneurs</li>
+                    <li><strong>Performance:</strong> Streaming pour gros fichiers, cache optimisé, uploads multiples
+                    </li>
+                    <li><strong>Maintenance:</strong> Interface unifiée, monitoring intégré, traçabilité complète</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PKF Internet Banking - BlobPath Service Documentation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Service de stockage de fichiers cloud-agnostique</p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop"></div>
+
+    <script>
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTop.classList.toggle('show', window.pageYOffset > 300);
+        });
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+
+</html>

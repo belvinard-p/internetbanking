@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKF Banking - Settings Service</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #fff;
+            --text-dim: #a0a0c0;
+            --accent: #fb923c;
+            --gradient: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+            --gradient-alt: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(251, 146, 60, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        header {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(251, 146, 60, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(251, 146, 60, 0.5);
+        }
+
+        .home-btn::before {
+            content: '🏠';
+            font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        nav {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 100px;
+            z-index: 99;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--gradient);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-num {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-alt);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-alt);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(251, 146, 60, 0.5);
+            box-shadow: 0 0 40px rgba(251, 146, 60, 0.3);
+        }
+
+        .card-num {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-role {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .intro-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .intro-card p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+        }
+
+        .scroll-top::before {
+            content: '↑';
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="landingPage.html" class="home-btn">Accueil</a>
+        <h1>PKF Banking - Settings Service</h1>
+        <p class="subtitle">Centre de Configuration de l'Écosystème PKF Internet Banking</p>
+    </header>
+
+    <nav>
+        <a href="#overview" class="nav-btn">Vue d'ensemble</a>
+        <a href="#core" class="nav-btn">Services Core</a>
+        <a href="#scheduler" class="nav-btn">Planification</a>
+        <a href="#utils" class="nav-btn">Utilitaires</a>
+        <a href="#config" class="nav-btn">Configuration</a>
+    </nav>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">15</div>
+                <div class="stat-label">Services</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">6</div>
+                <div class="stat-label">Services Core</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">Redis</div>
+                <div class="stat-label">Pub/Sub</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">RSA</div>
+                <div class="stat-label">Chiffrement</div>
+            </div>
+        </div>
+
+        <section id="overview" class="section">
+            <h2 class="section-title">Vue d'ensemble</h2>
+            <div class="intro-card">
+                <p>
+                    Ce service de paramètres constitue le centre de configuration de l'écosystème PKF Internet Banking,
+                    gérant tous les aspects de personnalisation, branding, licences et paramètres système avec une
+                    architecture
+                    robuste de validation, cache et notification en temps réel.
+                </p>
+            </div>
+        </section>
+
+        <section id="core" class="section">
+            <h2 class="section-title">Services Core</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">111</div>
+                    <h3 class="card-title">SettingsService</h3>
+                    <span class="card-role">Gestion centralisée des paramètres et configurations système</span>
+                    <ul>
+                        <li>Gestion paramètres par catégorie</li>
+                        <li>Upload éléments de branding</li>
+                        <li>Validation dimensions et formats images</li>
+                        <li>Gestion informations de contact</li>
+                        <li>Génération URLs signées</li>
+                        <li>Cache intelligent avec expiration</li>
+                        <li>Substitution fichiers génériques</li>
+                        <li>Historique avec versioning</li>
+                        <li>Support paramètres publics/privés</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">112</div>
+                    <h3 class="card-title">SettingsPublisherService</h3>
+                    <span class="card-role">Publication des changements de paramètres via Redis</span>
+                    <ul>
+                        <li>Publication modifications branding temps réel</li>
+                        <li>Notification changements contact</li>
+                        <li>Diffusion mises à jour bancaires</li>
+                        <li>Redis Pub/Sub inter-services</li>
+                        <li>Messages structurés</li>
+                        <li>Logging détaillé pour audit</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">113</div>
+                    <h3 class="card-title">LicenseService</h3>
+                    <span class="card-role">Gestion complète des licences système</span>
+                    <ul>
+                        <li>Upload et validation fichiers chiffrés</li>
+                        <li>Décryptage avec clés privées RSA</li>
+                        <li>Vérification signatures numériques</li>
+                        <li>Validation émetteur et période</li>
+                        <li>Gestion statuts de licence</li>
+                        <li>Cache en mémoire pour performance</li>
+                        <li>Désactivation automatique anciennes licences</li>
+                        <li>Suivi notifications d'expiration</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">114</div>
+                    <h3 class="card-title">BankInfoService</h3>
+                    <span class="card-role">Gestion des informations bancaires publiques</span>
+                    <ul>
+                        <li>Gestion URLs "À propos"</li>
+                        <li>Mise à jour infos institutionnelles</li>
+                        <li>Publication automatique changements</li>
+                        <li>Gestion historique modifications</li>
+                        <li>Validation URLs et formats</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">115</div>
+                    <h3 class="card-title">ResourceInitializerService</h3>
+                    <span class="card-role">Initialisation des ressources système au démarrage</span>
+                    <ul>
+                        <li>Upload automatique ressources génériques</li>
+                        <li>Vérification existence fichiers</li>
+                        <li>Gestion IDs fixes ressources système</li>
+                        <li>Initialisation conditionnelle</li>
+                        <li>Gestion erreurs avec logging</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">116</div>
+                    <h3 class="card-title">UserClient</h3>
+                    <span class="card-role">Client pour récupération d'informations utilisateur</span>
+                    <ul>
+                        <li>Récupération noms utilisateurs pour audit</li>
+                        <li>Cache infos utilisateur</li>
+                        <li>Formatage noms complets</li>
+                        <li>Gestion erreurs communication</li>
+                        <li>Support utilisateurs supprimés</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="scheduler" class="section">
+            <h2 class="section-title">Services de Planification</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">117</div>
+                    <h3 class="card-title">LicenseMonitor</h3>
+                    <span class="card-role">Surveillance automatique des licences système</span>
+                    <ul>
+                        <li>Validation périodique avec cron</li>
+                        <li>Détection licences expirées/invalides</li>
+                        <li>Notifications automatiques par email</li>
+                        <li>Gestion intervalles de notification</li>
+                        <li>Support multilingue notifications</li>
+                        <li>Surveillance émetteur pour sécurité</li>
+                        <li>Formatage dates selon locales</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="utils" class="section">
+            <h2 class="section-title">Utilitaires et Validation</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">118</div>
+                    <h3 class="card-title">ImageDimensionsValidator</h3>
+                    <span class="card-role">Validation des dimensions d'images pour branding</span>
+                    <ul>
+                        <li>Validation dimensions selon type</li>
+                        <li>Vérification ratios d'aspect</li>
+                        <li>Support PNG, JPEG</li>
+                        <li>Configuration flexible contraintes</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">119</div>
+                    <h3 class="card-title">SettingsValueValidator</h3>
+                    <span class="card-role">Validation des valeurs de paramètres</span>
+                    <ul>
+                        <li>Validation formats (URL, email, téléphone)</li>
+                        <li>Vérification conformité données</li>
+                        <li>Support types de validation métier</li>
+                        <li>Messages d'erreur contextuels</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">120</div>
+                    <h3 class="card-title">LicenseHelper</h3>
+                    <span class="card-role">Utilitaires cryptographiques pour licences</span>
+                    <ul>
+                        <li>Parsing clés RSA publiques/privées</li>
+                        <li>Décryptage fichiers chiffrés</li>
+                        <li>Vérification signatures numériques</li>
+                        <li>Gestion formats clés cryptographiques</li>
+                        <li>Utilitaires sécurité intégrité</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">121</div>
+                    <h3 class="card-title">AppUtils</h3>
+                    <span class="card-role">Utilitaires généraux de l'application</span>
+                    <ul>
+                        <li>Conversion énumérations en noms lisibles</li>
+                        <li>Formatage données pour affichage</li>
+                        <li>Fonctions utilitaires communes partagées</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="config" class="section">
+            <h2 class="section-title">Configuration et Cache</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">122</div>
+                    <h3 class="card-title">CacheConfiguration</h3>
+                    <span class="card-role">Configuration du système de cache</span>
+                    <ul>
+                        <li>Configuration Redis pour cache distribué</li>
+                        <li>Gestion cache en mémoire pour dev</li>
+                        <li>Paramétrage TTL et politiques d'éviction</li>
+                        <li>Support multiples implémentations</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">123</div>
+                    <h3 class="card-title">CacheManagerImpl</h3>
+                    <span class="card-role">Implémentation du gestionnaire de cache</span>
+                    <ul>
+                        <li>Abstraction opérations de cache</li>
+                        <li>Basculement automatique Redis/mémoire</li>
+                        <li>Gestion erreurs avec fallback</li>
+                        <li>Monitoring performances cache</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">124</div>
+                    <h3 class="card-title">LicenseProperties</h3>
+                    <span class="card-role">Configuration des propriétés de licence</span>
+                    <ul>
+                        <li>Gestion clés chiffrement et signature</li>
+                        <li>Configuration notifications expiration</li>
+                        <li>Paramètres surveillance et monitoring</li>
+                        <li>URLs et chemins fichiers licence</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">125</div>
+                    <h3 class="card-title">ImageDimensionsConfig</h3>
+                    <span class="card-role">Configuration des contraintes d'images</span>
+                    <ul>
+                        <li>Définition dimensions autorisées par type</li>
+                        <li>Configuration ratios d'aspect acceptés</li>
+                        <li>Paramètres validation formats image</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PKF Internet Banking - Settings Service Documentation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Centre de configuration avec validation, cache et
+            notification temps réel</p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop"></div>
+
+    <script>
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTop.classList.toggle('show', window.pageYOffset > 300);
+        });
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+
+</html>

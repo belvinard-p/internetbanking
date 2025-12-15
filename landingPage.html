@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKF Internet Banking - Documentation Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #fff;
+            --text-dim: #a0a0c0;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-3: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-4: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+            --gradient-5: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --gradient-6: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+            --gradient-7: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+            --gradient-8: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+            --gradient-9: linear-gradient(135deg, #e879f9 0%, #d946ef 100%);
+            --gradient-10: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+            --gradient-11: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --gradient-12: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        header {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg,
+                    #667eea 0%, #10b981 16%, #f59e0b 32%,
+                    #a855f7 48%, #06b6d4 64%, #ef4444 80%, #8b5cf6 100%);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.3rem;
+            font-weight: 300;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 5rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-desc {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .service-card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            transition: height 0.4s;
+        }
+
+        .service-card:hover::before {
+            height: 100%;
+            opacity: 0.1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.8rem;
+        }
+
+        .card-desc {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .stat-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gradient);
+        }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-8px) scale(1.1);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
+        }
+
+        .scroll-top::before {
+            content: '↑';
+            color: white;
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>PKF Internet Banking</h1>
+        <p class="subtitle">Documentation Hub - Architecture Microservices Complète</p>
+    </header>
+
+    <div class="container">
+        <div class="stats-overview">
+            <div class="stat-card" style="--gradient: var(--gradient-1)">
+                <div class="stat-number">16</div>
+                <div class="stat-label">Microservices</div>
+            </div>
+            <div class="stat-card" style="--gradient: var(--gradient-2)">
+                <div class="stat-number">140+</div>
+                <div class="stat-label">Services</div>
+            </div>
+            <div class="stat-card" style="--gradient: var(--gradient-3)">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Tables DB</div>
+            </div>
+            <div class="stat-card" style="--gradient: var(--gradient-4)">
+                <div class="stat-number">212+</div>
+                <div class="stat-label">Migrations</div>
+            </div>
+        </div>
+
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Services Core</h2>
+                <p class="section-desc">Services principaux de l'écosystème bancaire</p>
+            </div>
+            <div class="grid">
+                <a href="authservice.html" class="service-card" style="--gradient: var(--gradient-1)">
+                    <div class="card-icon">🔐</div>
+                    <h3 class="card-title">Auth Service</h3>
+                    <p class="card-desc">Service d'authentification et gestion des utilisateurs avec MFA, TOTP et
+                        support corporate</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>29 Services
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>JWT & OAuth2
+                        </div>
+                    </div>
+                </a>
+
+                <a href="userService.html" class="service-card" style="--gradient: var(--gradient-2)">
+                    <div class="card-icon">👥</div>
+                    <h3 class="card-title">User Service</h3>
+                    <p class="card-desc">Gestion complète des utilisateurs, profils, comptes et abonnements</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>55+ Services
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>8 Domaines
+                        </div>
+                    </div>
+                </a>
+
+                <a href="paymentService.html" class="service-card" style="--gradient: var(--gradient-3)">
+                    <div class="card-icon">💳</div>
+                    <h3 class="card-title">Payment Service</h3>
+                    <p class="card-desc">Gestion des paiements, transferts et opérations financières</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>11 API Services
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>PostgreSQL
+                        </div>
+                    </div>
+                </a>
+
+                <a href="gateway.html" class="service-card" style="--gradient: var(--gradient-4)">
+                    <div class="card-icon">🌐</div>
+                    <h3 class="card-title">Gateway Service</h3>
+                    <p class="card-desc">Point d'entrée central avec routage, sécurité et documentation API</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>9 Services
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>Reactive
+                        </div>
+                    </div>
+                </a>
+
+                <a href="commonlib.html" class="service-card" style="--gradient: var(--gradient-5)">
+                    <div class="card-icon">📚</div>
+                    <h3 class="card-title">Common Library</h3>
+                    <p class="card-desc">Bibliothèque partagée avec clients CBS, validation et autorisation</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>22 Composants
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>Shared
+                        </div>
+                    </div>
+                </a>
+
+                <a href="settings.html" class="service-card" style="--gradient: var(--gradient-6)">
+                    <div class="card-icon">⚙️</div>
+                    <h3 class="card-title">Settings Service</h3>
+                    <p class="card-desc">Centre de configuration avec branding, licences et paramètres système</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>15 Services
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>Redis Pub/Sub
+                        </div>
+                    </div>
+                </a>
+
+                <a href="transaction.html" class="service-card" style="--gradient: var(--gradient-7)">
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Transaction Service</h3>
+                    <p class="card-desc">Gestion des transactions bancaires avec historique et export</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>10+ Services
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>CBS Sync
+                        </div>
+                    </div>
+                </a>
+
+                <a href="blothpathService.html" class="service-card" style="--gradient: var(--gradient-8)">
+                    <div class="card-icon">📁</div>
+                    <h3 class="card-title">BlobPath Service</h3>
+                    <p class="card-desc">Stockage de fichiers cloud-agnostique (Azure, MinIO, FileSystem)</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>3 Backends
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>8 Conteneurs
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Adaptateurs CBS</h2>
+                <p class="section-desc">Intégration avec les systèmes bancaires centraux</p>
+            </div>
+            <div class="grid">
+                <a href="tefo.html" class="service-card" style="--gradient: var(--gradient-9)">
+                    <div class="card-icon">🔗</div>
+                    <h3 class="card-title">TEFO Adapter</h3>
+                    <p class="card-desc">Adaptateur pour le système bancaire central TEFO avec OAuth2</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>10+ Services
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>OAuth2
+                        </div>
+                    </div>
+                </a>
+
+                <a href="amplitudeAdapter.html" class="service-card" style="--gradient: var(--gradient-10)">
+                    <div class="card-icon">🔌</div>
+                    <h3 class="card-title">Amplitude Adapter</h3>
+                    <p class="card-desc">Interface avec le système bancaire Amplitude</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>16 Services
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>REST APIs
+                        </div>
+                    </div>
+                </a>
+
+                <a href="adapter.html" class="service-card" style="--gradient: var(--gradient-11)">
+                    <div class="card-icon">🏦</div>
+                    <h3 class="card-title">ABS Adapter</h3>
+                    <p class="card-desc">Interface avec le système bancaire central ABS avec signature RSA</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>16 Services
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>RSA Signature
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Infrastructure</h2>
+                <p class="section-desc">Base de données et architecture système</p>
+            </div>
+            <div class="grid">
+                <a href="schema.html" class="service-card" style="--gradient: var(--gradient-12)">
+                    <div class="card-icon">💾</div>
+                    <h3 class="card-title">Database Schema</h3>
+                    <p class="card-desc">Schéma PostgreSQL complet avec 50+ tables et 212+ migrations Liquibase</p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>50+ Tables
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"></div>12 Domaines
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PKF Internet Banking - Documentation Hub</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Architecture Microservices Complète | Spring Boot 3 | Java 21
+            | PostgreSQL</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7;">Tous droits réservés</p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop"></div>
+
+    <script>
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTop.classList.toggle('show', window.pageYOffset > 300);
+        });
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(card);
+        });
+    </script>
+</body>
+
+</html>

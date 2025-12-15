@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKF Internet Banking - Documentation des Services d'Authentification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark-bg: #0f0f23;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0c0;
+            --text-accent: #667eea;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 40px rgba(102, 126, 234, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(79, 172, 254, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes backgroundPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        /* Header */
+        header {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-md);
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .home-btn::before {
+            content: '🏠';
+            font-size: 1.2rem;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+            animation: slideInDown 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 120px;
+            z-index: 999;
+            margin-bottom: 2rem;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 4rem;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60%;
+            height: 3px;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+        }
+
+        /* Service Cards Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-glow);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .service-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .service-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .service-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .service-role {
+            color: var(--text-accent);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .service-features li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .service-features li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--text-accent);
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .service-features li:hover {
+            color: var(--text-primary);
+            padding-left: 2rem;
+        }
+
+        .service-features li:hover::before {
+            left: 0.5rem;
+        }
+
+        /* Category Badge */
+        .category-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: var(--secondary-gradient);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Architecture Section */
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .architecture-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .architecture-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(79, 172, 254, 0.5);
+        }
+
+        .architecture-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .architecture-card ul {
+            list-style: none;
+        }
+
+        .architecture-card li {
+            padding: 0.4rem 0;
+            padding-left: 1.2rem;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .architecture-card li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--text-accent);
+            font-weight: 700;
+        }
+
+        /* Stats Section */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--card-border);
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .scroll-top::before {
+            content: '↑';
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-content {
+                flex-direction: column;
+            }
+
+            nav {
+                position: relative;
+                top: 0;
+            }
+        }
+
+        /* Loading animation */
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        .loading {
+            animation: shimmer 2s infinite;
+            background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+            background-size: 1000px 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <a href="landingPage.html" class="home-btn">Accueil</a>
+            <h1>PKF Internet Banking - Auth Service</h1>
+            <p class="subtitle">Service d'Authentification et Gestion des Utilisateurs</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-content">
+            <a href="#auth-services" class="nav-btn">Services d'Authentification</a>
+            <a href="#corporate-services" class="nav-btn">Utilisateurs Corporatifs</a>
+            <a href="#mfa-services" class="nav-btn">Authentification MFA</a>
+            <a href="#totp-services" class="nav-btn">Services TOTP</a>
+            <a href="#support-services" class="nav-btn">Services de Support</a>
+            <a href="#user-services" class="nav-btn">Gestion des Utilisateurs</a>
+            <a href="#architecture" class="nav-btn">Architecture</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Stats Overview -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <span class="stat-number">28</span>
+                <span class="stat-label">Services Auth</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">26+</span>
+                <span class="stat-label">Services User</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Sécurisé</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">MFA</span>
+                <span class="stat-label">Multi-Facteurs</span>
+            </div>
+        </div>
+
+        <!-- Authentication Services -->
+        <section id="auth-services" class="section">
+            <h2 class="section-title">Services d'Authentification</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-number">1</div>
+                    <h3 class="service-name">AuthenticationService</h3>
+                    <span class="service-role">Gestion de l'authentification des utilisateurs finaux</span>
+                    <ul class="service-features">
+                        <li>Enregistrement de nouveaux utilisateurs avec validation CBS</li>
+                        <li>Authentification des utilisateurs avec gestion MFA</li>
+                        <li>Validation des numéros de téléphone</li>
+                        <li>Vérification des codes OTP/TOTP</li>
+                        <li>Création et changement de mots de passe</li>
+                        <li>Gestion des sessions utilisateur</li>
+                        <li>Terminaison des sessions actives</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">2</div>
+                    <h3 class="service-name">AuthenticationAdminService</h3>
+                    <span class="service-role">Gestion de l'authentification des administrateurs</span>
+                    <ul class="service-features">
+                        <li>Enregistrement d'administrateurs avec rôles spécifiques</li>
+                        <li>Authentification avec validation de branche</li>
+                        <li>Gestion des tokens de rafraîchissement</li>
+                        <li>Envoi de liens de réinitialisation de mot de passe</li>
+                        <li>Génération de PDF avec identifiants utilisateur</li>
+                        <li>Changement d'état des comptes utilisateur</li>
+                        <li>Enregistrement de sous-utilisateurs</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">3</div>
+                    <h3 class="service-name">AuthenticationSuperAdminService</h3>
+                    <span class="service-role">Gestion de l'authentification des super-administrateurs</span>
+                    <ul class="service-features">
+                        <li>Authentification des super-administrateurs</li>
+                        <li>Réinitialisation des mots de passe d'administrateurs</li>
+                        <li>Changement d'état des comptes administrateur</li>
+                        <li>Envoi de liens de réinitialisation</li>
+                        <li>Création de nouveaux mots de passe avec validation OTP</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Corporate User Services -->
+        <section id="corporate-services" class="section">
+            <h2 class="section-title">Services de Gestion des Utilisateurs Corporatifs</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-number">4</div>
+                    <h3 class="service-name">AuthenticationMainSubUserService</h3>
+                    <span class="service-role">Gestion des utilisateurs principaux dans les comptes corporatifs</span>
+                    <ul class="service-features">
+                        <li>Enregistrement d'utilisateurs principaux</li>
+                        <li>Validation des permissions et limites de création</li>
+                        <li>Gestion des attributs spécifiques</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">5</div>
+                    <h3 class="service-name">AuthenticationSubUserService</h3>
+                    <span class="service-role">Gestion des sous-utilisateurs dans les comptes corporatifs</span>
+                    <ul class="service-features">
+                        <li>Enregistrement avec validation parentale</li>
+                        <li>Vérification des limites de création</li>
+                        <li>Gestion des permissions et attributs</li>
+                        <li>Validation des relations parent-enfant</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">6</div>
+                    <h3 class="service-name">AuthenticationCorporateService</h3>
+                    <span class="service-role">Services communs pour les comptes corporatifs</span>
+                    <ul class="service-features">
+                        <li>Réinitialisation des mots de passe</li>
+                        <li>Gestion des relations utilisateurs</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- MFA Services -->
+        <section id="mfa-services" class="section">
+            <h2 class="section-title">Services d'Authentification Multi-Facteurs (MFA)</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-number">7</div>
+                    <h3 class="service-name">LoginTwoFactorAuthenticationService</h3>
+                    <span class="service-role">Gestion MFA pour les utilisateurs finaux</span>
+                    <ul class="service-features">
+                        <li>Génération et envoi d'OTP par SMS/Email</li>
+                        <li>Vérification des codes OTP avec gestion des tentatives</li>
+                        <li>Gestion des blocages temporaires</li>
+                        <li>Support des différents types d'actions (LOGIN, TRANSFER, etc.)</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">8</div>
+                    <h3 class="service-name">LoginTwoFactorAuthenticationAdminService</h3>
+                    <span class="service-role">Gestion MFA pour les administrateurs</span>
+                    <ul class="service-features">
+                        <li>Envoi de liens de réinitialisation par email</li>
+                        <li>Validation des codes OTP pour administrateurs</li>
+                        <li>Gestion des tokens avec expiration</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">9</div>
+                    <h3 class="service-name">TwoFactorAuthService</h3>
+                    <span class="service-role">Service générique pour la création d'OTP</span>
+                    <ul class="service-features">
+                        <li>Création d'OTP pour utilisateurs spécifiques</li>
+                        <li>Envoi d'OTP par SMS et email</li>
+                        <li>Vérification avec validation d'action</li>
+                        <li>Support pour actions administratives</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOTP Services -->
+        <section id="totp-services" class="section">
+            <h2 class="section-title">Services TOTP (Time-based One-Time Password)</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-number">10</div>
+                    <h3 class="service-name">UserTotpSettingsService</h3>
+                    <span class="service-role">Gestion des paramètres TOTP pour les utilisateurs</span>
+                    <ul class="service-features">
+                        <li>Initialisation de la configuration TOTP</li>
+                        <li>Finalisation avec validation</li>
+                        <li>Mise à jour du statut TOTP (actif/inactif)</li>
+                        <li>Récupération du statut TOTP utilisateur</li>
+                        <li>Suppression complète des paramètres TOTP</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">11</div>
+                    <h3 class="service-name">BackupCodeService</h3>
+                    <span class="service-role">Gestion des codes de sauvegarde TOTP</span>
+                    <ul class="service-features">
+                        <li>Comptage des codes de sauvegarde non utilisés</li>
+                        <li>Régénération avec validation mot de passe</li>
+                        <li>Gestion de l'utilisation des codes</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Support Services -->
+        <section id="support-services" class="section">
+            <h2 class="section-title">Services de Support et Utilitaires</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-number">12</div>
+                    <h3 class="service-name">BaseAuthenticationService</h3>
+                    <span class="service-role">Classe de base avec fonctionnalités communes</span>
+                    <ul class="service-features">
+                        <li>Récupération du contexte de sécurité utilisateur</li>
+                        <li>Envoi d'emails d'inscription et de statut</li>
+                        <li>Validation des mots de passe selon les règles</li>
+                        <li>Génération de noms d'utilisateur uniques</li>
+                        <li>Gestion des langues et locales</li>
+                        <li>Validation des branches et codes bancaires</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">13</div>
+                    <h3 class="service-name">BaseTwoFactorAuthService</h3>
+                    <span class="service-role">Classe de base pour les services MFA</span>
+                    <ul class="service-features">
+                        <li>Création de requêtes de messages standardisées</li>
+                        <li>Formatage des arguments pour SMS et email</li>
+                        <li>Configuration des paramètres de contact bancaire</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">14</div>
+                    <h3 class="service-name">DeviceService</h3>
+                    <span class="service-role">Gestion des appareils et sessions utilisateur</span>
+                    <ul class="service-features">
+                        <li>Détection et enregistrement de nouveaux appareils</li>
+                        <li>Gestion du statut des appareils</li>
+                        <li>Création de sessions utilisateur avec IP</li>
+                        <li>Envoi d'alertes pour nouveaux appareils</li>
+                        <li>Parsing des informations User-Agent</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">15</div>
+                    <h3 class="service-name">EmailService</h3>
+                    <span class="service-role">Service d'envoi d'emails</span>
+                    <ul class="service-features">
+                        <li>Envoi asynchrone d'emails via l'adaptateur</li>
+                        <li>Support multilingue avec locale</li>
+                        <li>Intégration avec le client adaptateur</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">16</div>
+                    <h3 class="service-name">JwtService</h3>
+                    <span class="service-role">Gestion des tokens JWT</span>
+                    <ul class="service-features">
+                        <li>Génération de tokens d'accès et de rafraîchissement</li>
+                        <li>Extraction des claims et validation</li>
+                        <li>Gestion de l'expiration et de la sécurité</li>
+                        <li>Support pour différents types d'utilisateurs</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">17</div>
+                    <h3 class="service-name">MessageService</h3>
+                    <span class="service-role">Service unifié d'envoi de messages</span>
+                    <ul class="service-features">
+                        <li>Envoi combiné SMS et email</li>
+                        <li>Support multilingue avec templates</li>
+                        <li>Gestion des échecs partiels</li>
+                        <li>Logging des résultats d'envoi</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">18</div>
+                    <h3 class="service-name">PasswordService</h3>
+                    <span class="service-role">Gestion et validation des mots de passe</span>
+                    <ul class="service-features">
+                        <li>Vérification avec gestion des tentatives</li>
+                        <li>Validation des règles de complexité</li>
+                        <li>Gestion des blocages pour tentatives échouées</li>
+                        <li>Historique des changements</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">19</div>
+                    <h3 class="service-name">UserBlockerService</h3>
+                    <span class="service-role">Gestion des blocages utilisateur</span>
+                    <ul class="service-features">
+                        <li>Création de blocages temporaires avec raisons</li>
+                        <li>Vérification de l'existence de blocages actifs</li>
+                        <li>Déblocage automatique après expiration</li>
+                        <li>Gestion des différents types de blocages</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">20</div>
+                    <h3 class="service-name">LoginResultService</h3>
+                    <span class="service-role">Gestion des résultats de connexion</span>
+                    <ul class="service-features">
+                        <li>Traitement des succès de connexion</li>
+                        <li>Gestion des échecs avec compteurs</li>
+                        <li>Création de blocages après échecs répétés</li>
+                        <li>Réinitialisation des compteurs après succès</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Management Services -->
+        <section id="user-services" class="section">
+            <h2 class="section-title">Services de Gestion des Utilisateurs</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-number">21</div>
+                    <h3 class="service-name">UserAccountService</h3>
+                    <span class="service-role">Gestion des comptes utilisateur</span>
+                    <ul class="service-features">
+                        <li>Création des associations utilisateur-compte</li>
+                        <li>Récupération des comptes clients depuis CBS</li>
+                        <li>Gestion de la visibilité des comptes</li>
+                        <li>Synchronisation avec les données bancaires</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">22</div>
+                    <h3 class="service-name">InvalidTokensCache</h3>
+                    <span class="service-role">Cache des tokens invalidés</span>
+                    <ul class="service-features">
+                        <li>Stockage des tokens révoqués/invalidés</li>
+                        <li>Vérification de la validité des tokens</li>
+                        <li>Nettoyage automatique des tokens expirés</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">23</div>
+                    <h3 class="service-name">SubscriptionBillService</h3>
+                    <span class="service-role">Gestion des factures d'abonnement</span>
+                    <ul class="service-features">
+                        <li>Mise à jour du statut des factures</li>
+                        <li>Gestion des transitions d'état</li>
+                        <li>Validation des changements de statut</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">24</div>
+                    <h3 class="service-name">UserRegistrationApprovesService</h3>
+                    <span class="service-role">Gestion des approbations d'inscription</span>
+                    <ul class="service-features">
+                        <li>Mise à jour des demandes d'approbation</li>
+                        <li>Changement de statut des inscriptions</li>
+                        <li>Notification des changements de statut</li>
+                        <li>Gestion des permissions d'approbation</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">25</div>
+                    <h3 class="service-name">UserRegistrationApprovesWebSocketService</h3>
+                    <span class="service-role">Notifications temps réel pour les inscriptions</span>
+                    <ul class="service-features">
+                        <li>Envoi de notifications WebSocket</li>
+                        <li>Diffusion des mises à jour de statut</li>
+                        <li>Gestion des connexions WebSocket</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">26</div>
+                    <h3 class="service-name">AdminRoleService</h3>
+                    <span class="service-role">Gestion des rôles administrateur</span>
+                    <ul class="service-features">
+                        <li>Récupération des rôles administrateur actifs</li>
+                        <li>Validation de l'existence et du statut des rôles</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">27</div>
+                    <h3 class="service-name">PermissionService</h3>
+                    <span class="service-role">Gestion des permissions système</span>
+                    <ul class="service-features">
+                        <li>Récupération des permissions par ID</li>
+                        <li>Validation de l'existence des permissions</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-number">28</div>
+                    <h3 class="service-name">PDFAdminService</h3>
+                    <span class="service-role">Génération de documents PDF administratifs</span>
+                    <ul class="service-features">
+                        <li>Génération de documents PDF pour les administrateurs</li>
+                        <li>Création de rapports et documents officiels</li>
+                        <li>Gestion des templates PDF</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture" class="section">
+            <h2 class="section-title">Architecture et Patterns</h2>
+
+            <div class="architecture-grid">
+                <div class="architecture-card">
+                    <h3>Patterns Utilisés</h3>
+                    <ul>
+                        <li>Service Layer Pattern</li>
+                        <li>Repository Pattern</li>
+                        <li>DTO Pattern</li>
+                        <li>Mapper Pattern</li>
+                        <li>Cache Pattern</li>
+                        <li>Observer Pattern</li>
+                        <li>Strategy Pattern</li>
+                        <li>Template Method Pattern</li>
+                    </ul>
+                </div>
+
+                <div class="architecture-card">
+                    <h3>Intégrations Externes</h3>
+                    <ul>
+                        <li>CBS (Core Banking System)</li>
+                        <li>Adaptateur Services</li>
+                        <li>Blob Storage</li>
+                        <li>Services Internes</li>
+                        <li>WebSocket</li>
+                        <li>Alert Internal Client</li>
+                        <li>Blob Path File Internal Client</li>
+                    </ul>
+                </div>
+
+                <div class="architecture-card">
+                    <h3>Fonctionnalités Transversales</h3>
+                    <ul>
+                        <li>Audit et Traçabilité</li>
+                        <li>Sécurité Multi-niveaux</li>
+                        <li>Cache et Performance</li>
+                        <li>Validation Métier</li>
+                        <li>Notifications</li>
+                        <li>Pagination</li>
+                        <li>Filtrage et Recherche</li>
+                        <li>Gestion d'Erreurs</li>
+                        <li>Retry et Résilience</li>
+                        <li>Monitoring et Logging</li>
+                    </ul>
+                </div>
+
+                <div class="architecture-card">
+                    <h3>Sécurité</h3>
+                    <ul>
+                        <li>Validation stricte des permissions par rôle</li>
+                        <li>Gestion des tentatives avec blocages temporaires</li>
+                        <li>Chiffrement des mots de passe avec BCrypt</li>
+                        <li>Validation des tokens JWT avec expiration</li>
+                        <li>Protection contre les attaques par force brute</li>
+                        <li>Validation des origines cross-role</li>
+                        <li>Authentification Multi-Facteurs (MFA)</li>
+                        <li>TOTP (Time-based OTP)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PKF Internet Banking - Documentation des Services d'Authentification</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">Architecture robuste et sécurisée pour la gestion des
+            utilisateurs en environnement bancaire multi-tenant</p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop"></div>
+
+    <script>
+        // Scroll to top functionality
+        const scrollTop = document.getElementById('scrollTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTop.classList.add('visible');
+            } else {
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.service-card, .architecture-card, .stat-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Add hover effect sound (optional - visual feedback)
+        document.querySelectorAll('.service-card, .nav-btn').forEach(element => {
+            element.addEventListener('mouseenter', function () {
+                this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+        });
+    </script>
+</body>
+
+</html>

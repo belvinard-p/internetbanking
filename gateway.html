@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKF Banking - Gateway Service</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #fff;
+            --text-dim: #a0a0c0;
+            --accent: #a855f7;
+            --gradient: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+            --gradient-alt: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(20, 184, 166, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        header {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+        }
+
+        .home-btn::before {
+            content: '🏠';
+            font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        nav {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 100px;
+            z-index: 99;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--gradient);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-num {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-alt);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-alt);
+        }
+
+        .info-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .info-card p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .info-card ul {
+            list-style: none;
+        }
+
+        .info-card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+        }
+
+        .info-card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .info-card code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent);
+        }
+
+        .route-section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .route-section h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .route-item {
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .badge-open {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-protected {
+            background: #ef4444;
+            color: white;
+        }
+
+        .badge-ws {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+        }
+
+        .scroll-top::before {
+            content: '↑';
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            nav {
+                flex-direction: column;
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="landingPage.html" class="home-btn">Accueil</a>
+        <h1>PKF Banking - Gateway Service</h1>
+        <p class="subtitle">Point d'Entrée Central de l'Écosystème PKF Internet Banking</p>
+    </header>
+
+    <nav>
+        <a href="#overview" class="nav-btn">Vue d'ensemble</a>
+        <a href="#routes" class="nav-btn">Routage</a>
+        <a href="#services" class="nav-btn">Services</a>
+        <a href="#security" class="nav-btn">Sécurité</a>
+        <a href="#config" class="nav-btn">Configuration</a>
+    </nav>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">6</div>
+                <div class="stat-label">Microservices</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">9</div>
+                <div class="stat-label">Services Core</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">3</div>
+                <div class="stat-label">Niveaux Sécurité</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">Reactive</div>
+                <div class="stat-label">Architecture</div>
+            </div>
+        </div>
+
+        <section id="overview" class="section">
+            <h2 class="section-title">Vue d'ensemble</h2>
+            <div class="info-card">
+                <h3>Architecture</h3>
+                <ul>
+                    <li><strong>Framework:</strong> Spring Cloud Gateway (Reactive)</li>
+                    <li><strong>Java Version:</strong> 21</li>
+                    <li><strong>Type:</strong> Reactive Web Application</li>
+                    <li><strong>Documentation:</strong> OpenAPI/Swagger centralisé</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <p>
+                    Le service Gateway est le point d'entrée central pour l'architecture de microservices PKF Internet
+                    Banking.
+                    Il gère le routage, l'authentification, l'autorisation et la validation des licences pour tous les
+                    microservices du système.
+                </p>
+            </div>
+        </section>
+
+        <section id="routes" class="section">
+            <h2 class="section-title">Routage des Services</h2>
+
+            <div class="route-section">
+                <h4><span class="badge badge-open">OUVERT</span>Routes Non Protégées</h4>
+                <div class="route-item">/api/v1/auth/authenticate - Authentification utilisateur</div>
+                <div class="route-item">/api/v1/auth/register - Inscription utilisateur</div>
+                <div class="route-item">/api/v1/auth/send/code - Envoi code de vérification</div>
+                <div class="route-item">/api/v1/auth/admin/authenticate - Authentification admin</div>
+                <div class="route-item">/api/v1/auth/super-admin/authenticate - Authentification super admin</div>
+                <div class="route-item">/api/open/v1/auth/** - APIs publiques d'authentification</div>
+                <div class="route-item">/api/open/v1/transaction/** - APIs publiques de transactions</div>
+                <div class="route-item">/api/v1/settings/public/info - Informations publiques</div>
+                <div class="route-item">/api/v1/blobpath/files/signed-url/** - URLs signées pour fichiers</div>
+            </div>
+
+            <div class="route-section">
+                <h4><span class="badge badge-protected">PROTÉGÉ</span>Routes Authentifiées</h4>
+                <div class="route-item">/api/v1/auth/** - APIs d'authentification</div>
+                <div class="route-item">/api/v1/transaction/** - APIs de transactions</div>
+                <div class="route-item">/api/v1/client/** - APIs de gestion clients</div>
+                <div class="route-item">/api/v1/payment/** - APIs de paiements</div>
+                <div class="route-item">/api/v1/settings/** - APIs de configuration</div>
+            </div>
+
+            <div class="route-section">
+                <h4><span class="badge badge-ws">WebSocket</span>Routes WebSocket</h4>
+                <div class="route-item">/auth-websocket/** - WebSockets d'authentification</div>
+                <div class="route-item">/client-websocket/** - WebSockets client avec authentification</div>
+            </div>
+        </section>
+
+        <section id="services" class="section">
+            <h2 class="section-title">Services Principaux</h2>
+
+            <div class="info-card">
+                <h3>1. Service de Routage</h3>
+                <p>Route les requêtes vers les microservices appropriés selon des règles prédéfinies.</p>
+            </div>
+
+            <div class="info-card">
+                <h3>2. AuthenticationGatewayFilterFactory</h3>
+                <ul>
+                    <li>Validation des tokens JWT auprès du service d'authentification</li>
+                    <li>Vérification via <code>/api/open/v1/auth/token/verify</code></li>
+                    <li>Transmission des headers de requête pour validation</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>3. TokenGatewayFilterFactory</h3>
+                <ul>
+                    <li>Vérification de la présence du token d'autorisation</li>
+                    <li>Validation du header <code>Authorization</code></li>
+                    <li>Retour d'erreur HTTP 401 si token manquant</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>4. LicenseService</h3>
+                <ul>
+                    <li>Validation de la validité et de l'expiration des licences</li>
+                    <li>Cache en mémoire des informations de licence</li>
+                    <li>Communication avec le service de paramètres</li>
+                    <li>Surveillance continue de l'état des licences</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>5. LicenseGlobalFilter</h3>
+                <ul>
+                    <li>Contrôle de validité des licences (priorité maximale)</li>
+                    <li>Gestion des routes autorisées en cas de licence expirée</li>
+                    <li>Permissions spéciales pour les super-admins en lecture seule</li>
+                    <li>Blocage de la connexion admin si licence invalide</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>6. Service WebSocket</h3>
+                <ul>
+                    <li>Support des communications temps réel</li>
+                    <li>Authentification WebSocket via <code>AddWSAuthorizationHeaderGatewayFilterFactory</code></li>
+                    <li>Nettoyage automatique des paramètres d'autorisation</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>7. Documentation API Centralisée</h3>
+                <p><strong>Endpoint:</strong> <code>/swagger-ui.html</code></p>
+                <ul>
+                    <li>API Gateway Service</li>
+                    <li>Auth Service (<code>/auth/internal/v3/api-docs</code>)</li>
+                    <li>Transaction Service (<code>/transaction/internal/v3/api-docs</code>)</li>
+                    <li>Client Service (<code>/client/internal/v3/api-docs</code>)</li>
+                    <li>Payment Service (<code>/payment/internal/v3/api-docs</code>)</li>
+                    <li>Settings Service (<code>/settings/internal/v3/api-docs</code>)</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>8. Service de Health Check</h3>
+                <ul>
+                    <li><strong>Endpoint:</strong> <code>/gateway/health-check</code></li>
+                    <li><strong>Réponse:</strong> "Service is up"</li>
+                    <li><strong>Utilisation:</strong> Monitoring et vérification de disponibilité</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>9. Service de Gestion CORS</h3>
+                <ul>
+                    <li>Origins autorisées: <code>*</code></li>
+                    <li>Headers autorisés: <code>*</code></li>
+                    <li>Méthodes: GET, POST, PUT, DELETE, HEAD, OPTIONS, PATCH, TRACE</li>
+                    <li>Appliqué à tous les endpoints (<code>[/**]</code>)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="security" class="section">
+            <h2 class="section-title">Sécurité</h2>
+
+            <div class="info-card">
+                <h3>Authentification Multi-niveaux</h3>
+                <ul>
+                    <li><strong>Niveau 1 - Validation de Token:</strong> Vérification de présence du token JWT</li>
+                    <li><strong>Niveau 2 - Authentification:</strong> Validation du token auprès du service d'auth</li>
+                    <li><strong>Niveau 3 - Licence:</strong> Contrôle de validité de licence système</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Gestion des Permissions</h3>
+                <ul>
+                    <li><strong>Utilisateurs standards:</strong> Accès selon permissions JWT</li>
+                    <li><strong>Super-admins:</strong> Accès en lecture seule même avec licence expirée</li>
+                    <li><strong>Admins:</strong> Blocage de connexion si licence invalide</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Headers de Sécurité</h3>
+                <ul>
+                    <li><code>X-Forwarded-Header</code>: Ajouté pour traçabilité</li>
+                    <li>Nettoyage: Suppression des headers sensibles</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Gestion des Erreurs</h3>
+                <ul>
+                    <li><strong>AuthException:</strong> Erreurs d'authentification (401)</li>
+                    <li><strong>ForwardErrorException:</strong> Erreurs de transmission vers services backend</li>
+                    <li><strong>InvalidLicenseException:</strong> Erreurs de licence invalide</li>
+                    <li><strong>GatewayControllerAdvice:</strong> Gestion centralisée des erreurs</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="config" class="section">
+            <h2 class="section-title">Configuration</h2>
+
+            <div class="info-card">
+                <h3>Variables d'Environnement - Services Backend</h3>
+                <ul>
+                    <li><code>AUTH_URI</code> - URI du service d'authentification</li>
+                    <li><code>TRANSACTION_URI</code> - URI du service de transactions</li>
+                    <li><code>CLIENT_URI</code> - URI du service client</li>
+                    <li><code>PAYMENT_URI</code> - URI du service de paiement</li>
+                    <li><code>SETTINGS_URI</code> - URI du service de paramètres</li>
+                    <li><code>BLOB_PATH_URI</code> - URI du service BlobPath</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Variables d'Environnement - WebSockets</h3>
+                <ul>
+                    <li><code>AUTH_URI_WS</code> - URI WebSocket du service d'authentification</li>
+                    <li><code>CLIENT_URI_WS</code> - URI WebSocket du service client</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Configuration Générale</h3>
+                <ul>
+                    <li><code>PORT</code> - Port du service Gateway</li>
+                    <li><code>SUPPORTED_LANGUAGES</code> - Langues supportées (en,fr,pt)</li>
+                    <li><code>LICENSE_ENABLED</code> - Activation du contrôle de licence</li>
+                    <li><code>ADMIN_LOGIN_URI</code> - URI de connexion admin</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Routes d'Exception pour Licence Expirée</h3>
+                <ul>
+                    <li>Authentification super-admin</li>
+                    <li>Gestion des licences</li>
+                    <li>Health checks de tous les services</li>
+                    <li>Documentation API Swagger</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Monitoring et Observabilité</h3>
+                <ul>
+                    <li><strong>Health Checks:</strong> <code>/gateway/health-check</code></li>
+                    <li><strong>Sentry:</strong> Intégration optionnelle pour monitoring d'erreurs</li>
+                    <li><strong>Traces:</strong> Échantillonnage à 100% des traces</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Déploiement et Haute Disponibilité</h3>
+                <ul>
+                    <li><strong>Profils Spring:</strong> Support de profils multiples</li>
+                    <li><strong>Vault:</strong> Support Azure Key Vault et HashiCorp Vault</li>
+                    <li><strong>Reactive:</strong> Architecture non-bloquante pour haute performance</li>
+                    <li><strong>Load Balancing:</strong> Gestion automatique de la charge
+                        (<code>loadbalancer.use404: true</code>)</li>
+                    <li><strong>Failover:</strong> Gestion des pannes de services backend</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PKF Internet Banking - Gateway Service Documentation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Point d'entrée central pour l'architecture de microservices
+        </p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop"></div>
+
+    <script>
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTop.classList.toggle('show', window.pageYOffset > 300);
+        });
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+
+</html>

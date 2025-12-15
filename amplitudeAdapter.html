@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PKF Banking - Amplitude Adapter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --card: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #fff;
+            --text-dim: #a0a0c0;
+            --accent: #38bdf8;
+            --gradient: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+            --gradient-alt: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(56, 189, 248, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(251, 191, 36, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        header {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+        }
+
+        .home-btn::before {
+            content: '🏠';
+            font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        nav {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 100px;
+            z-index: 99;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--gradient);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-num {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section {
+            margin: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-alt);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-alt);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 40px rgba(56, 189, 248, 0.3);
+        }
+
+        .card-num {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-role {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .card li {
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .intro-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .intro-card p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        footer {
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+        }
+
+        .scroll-top::before {
+            content: '↑';
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="landingPage.html" class="home-btn">Accueil</a>
+        <h1>PKF Banking - Amplitude Adapter</h1>
+        <p class="subtitle">Adaptateur pour le Système Bancaire Central Amplitude</p>
+    </header>
+
+    <nav>
+        <a href="#overview" class="nav-btn">Vue d'ensemble</a>
+        <a href="#services" class="nav-btn">Services</a>
+        <a href="#clients" class="nav-btn">Clients</a>
+        <a href="#config" class="nav-btn">Configuration</a>
+    </nav>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">16</div>
+                <div class="stat-label">Services</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">CBS</div>
+                <div class="stat-label">Amplitude</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">OAuth2</div>
+                <div class="stat-label">Authentification</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">Redis</div>
+                <div class="stat-label">Cache</div>
+            </div>
+        </div>
+
+        <section id="overview" class="section">
+            <h2 class="section-title">Vue d'ensemble</h2>
+            <div class="intro-card">
+                <p>
+                    L'Amplitude Adapter constitue la couche d'intégration spécialisée pour le système Core Banking
+                    Amplitude,
+                    fournissant une interface standardisée et sécurisée pour tous les services bancaires centraux, avec
+                    une gestion
+                    robuste de l'authentification OAuth2 et une surveillance continue de la connectivité.
+                </p>
+            </div>
+        </section>
+
+        <section id="services" class="section">
+            <h2 class="section-title">Services Principaux</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-num">126</div>
+                    <h3 class="card-title">AccountService</h3>
+                    <span class="card-role">Gestion des comptes bancaires via Amplitude</span>
+                    <ul>
+                        <li>Récupération données comptes depuis Amplitude CBS</li>
+                        <li>Transformation réponses Amplitude en format standardisé</li>
+                        <li>Mapping structures de données bancaires</li>
+                        <li>Gestion erreurs de communication</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">127</div>
+                    <h3 class="card-title">BankService</h3>
+                    <span class="card-role">Gestion des informations bancaires</span>
+                    <ul>
+                        <li>Récupération données bancaires depuis Amplitude</li>
+                        <li>Transformation format standardisé adaptateur</li>
+                        <li>Mapping structures données bancaires</li>
+                        <li>Gestion erreurs communication Amplitude</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">128</div>
+                    <h3 class="card-title">BranchService</h3>
+                    <span class="card-role">Gestion des succursales bancaires</span>
+                    <ul>
+                        <li>Récupération infos succursales depuis Amplitude</li>
+                        <li>Conversion données au format standard</li>
+                        <li>Synchronisation avec système central</li>
+                        <li>Mapping codes et identifiants Amplitude</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">129</div>
+                    <h3 class="card-title">CheckbookService</h3>
+                    <span class="card-role">Gestion des chéquiers via Amplitude</span>
+                    <ul>
+                        <li>Récupération données chéquiers</li>
+                        <li>Transformation format adaptateur</li>
+                        <li>Gestion commandes de chéquiers</li>
+                        <li>Mapping structures Amplitude</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">130</div>
+                    <h3 class="card-title">CurrencyService</h3>
+                    <span class="card-role">Gestion des devises via Amplitude</span>
+                    <ul>
+                        <li>Récupération devises supportées</li>
+                        <li>Transformation données devises</li>
+                        <li>Gestion codes devises et taux</li>
+                        <li>Synchronisation informations monétaires</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">131</div>
+                    <h3 class="card-title">CustomerService</h3>
+                    <span class="card-role">Gestion des clients via Amplitude</span>
+                    <ul>
+                        <li>Récupération données clients</li>
+                        <li>Transformation format standardisé</li>
+                        <li>Mapping informations clients</li>
+                        <li>Gestion erreurs communication</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">132</div>
+                    <h3 class="card-title">DepositService</h3>
+                    <span class="card-role">Gestion des dépôts via Amplitude</span>
+                    <ul>
+                        <li>Récupération données dépôts</li>
+                        <li>Transformation format adaptateur</li>
+                        <li>Gestion types de dépôts</li>
+                        <li>Mapping structures Amplitude</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">133</div>
+                    <h3 class="card-title">LoanService</h3>
+                    <span class="card-role">Gestion des prêts via Amplitude</span>
+                    <ul>
+                        <li>Récupération données prêts</li>
+                        <li>Transformation format standardisé</li>
+                        <li>Gestion informations prêts</li>
+                        <li>Mapping structures Amplitude</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">134</div>
+                    <h3 class="card-title">OperationFeesService</h3>
+                    <span class="card-role">Gestion des frais d'opération</span>
+                    <ul>
+                        <li>Récupération données frais</li>
+                        <li>Transformation format adaptateur</li>
+                        <li>Calcul frais opérations</li>
+                        <li>Mapping structures Amplitude</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">135</div>
+                    <h3 class="card-title">SwiftService</h3>
+                    <span class="card-role">Gestion des transferts SWIFT</span>
+                    <ul>
+                        <li>Récupération données SWIFT</li>
+                        <li>Transformation format standardisé</li>
+                        <li>Gestion transferts internationaux</li>
+                        <li>Mapping structures Amplitude</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">136</div>
+                    <h3 class="card-title">TransactionService</h3>
+                    <span class="card-role">Gestion des transactions bancaires</span>
+                    <ul>
+                        <li>Récupération données transactions</li>
+                        <li>Transformation format adaptateur</li>
+                        <li>Gestion historique transactions</li>
+                        <li>Mapping structures Amplitude</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">137</div>
+                    <h3 class="card-title">TransferService</h3>
+                    <span class="card-role">Gestion des transferts bancaires</span>
+                    <ul>
+                        <li>Récupération données transferts</li>
+                        <li>Transformation format standardisé</li>
+                        <li>Gestion opérations de transfert</li>
+                        <li>Mapping structures Amplitude</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">138</div>
+                    <h3 class="card-title">OAuth2TokenService</h3>
+                    <span class="card-role">Gestion de l'authentification OAuth2</span>
+                    <ul>
+                        <li>Récupération et gestion tokens OAuth2</li>
+                        <li>Cache Redis avec gestion expiration</li>
+                        <li>Validation validité tokens</li>
+                        <li>Renouvellement automatique tokens expirés</li>
+                        <li>Gestion sécurisée credentials OAuth2</li>
+                        <li>Optimisation via mise en cache</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">139</div>
+                    <h3 class="card-title">HealthService</h3>
+                    <span class="card-role">Surveillance de la santé du système</span>
+                    <ul>
+                        <li>Vérification état connectivité Amplitude</li>
+                        <li>Monitoring disponibilité services</li>
+                        <li>Rapports de santé pour supervision</li>
+                        <li>Détection pannes de communication</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">140</div>
+                    <h3 class="card-title">OAuth2TokenScheduler</h3>
+                    <span class="card-role">Planification automatique du renouvellement</span>
+                    <ul>
+                        <li>Renouvellement proactif tokens avant expiration</li>
+                        <li>Gestion tentatives avec backoff exponentiel</li>
+                        <li>Verrous distribués (ShedLock)</li>
+                        <li>Planification intelligente basée durée de vie</li>
+                        <li>Stratégie de retry configurable</li>
+                        <li>Logging détaillé des opérations</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-num">141</div>
+                    <h3 class="card-title">CbsExceptionHandler</h3>
+                    <span class="card-role">Gestion centralisée des exceptions</span>
+                    <ul>
+                        <li>Traitement uniforme erreurs HTTP Amplitude</li>
+                        <li>Conversion erreurs en exceptions métier</li>
+                        <li>Logging structuré pour diagnostic</li>
+                        <li>Gestion codes d'erreur spécifiques</li>
+                        <li>Retry automatique pour erreurs temporaires</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="clients" class="section">
+            <h2 class="section-title">Clients Amplitude</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">AccountClient</div>
+                    <span class="card-role">Client pour les comptes bancaires</span>
+                    <ul>
+                        <li>Communication REST avec endpoints Amplitude</li>
+                        <li>Gestion erreurs HTTP et exceptions réseau</li>
+                        <li>Parsing réponses JSON</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">BankClient</div>
+                    <span class="card-role">Client pour les informations bancaires</span>
+                    <ul>
+                        <li>Appels API vers endpoints bancaires</li>
+                        <li>Gestion timeouts et retry automatique</li>
+                        <li>Transformation réponses en objets Java</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">OAuth2Client</div>
+                    <span class="card-role">Client d'authentification OAuth2</span>
+                    <ul>
+                        <li>Authentification client credentials</li>
+                        <li>Gestion requêtes de token OAuth2</li>
+                        <li>Parsing réponses d'authentification</li>
+                        <li>Support standards OAuth2</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="config" class="section">
+            <h2 class="section-title">Configuration et Sécurité</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">OAuth2Properties</div>
+                    <span class="card-role">Configuration des paramètres OAuth2</span>
+                    <ul>
+                        <li>Gestion credentials OAuth2 (client_id, client_secret)</li>
+                        <li>Configuration URLs d'authentification</li>
+                        <li>Paramètres renouvellement automatique</li>
+                        <li>Configuration timeouts et intervalles retry</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">OAuth2HeaderRequestInterceptor</div>
+                    <span class="card-role">Injection automatique des headers OAuth2</span>
+                    <ul>
+                        <li>Ajout automatique tokens Bearer aux requêtes</li>
+                        <li>Gestion transparente de l'authentification</li>
+                        <li>Renouvellement automatique tokens expirés</li>
+                        <li>Sécurisation communications avec Amplitude</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PKF Internet Banking - Amplitude Adapter Documentation</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Adaptateur pour le système bancaire central Amplitude</p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop"></div>
+
+    <script>
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            scrollTop.classList.toggle('show', window.pageYOffset > 300);
+        });
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+
+</html>
